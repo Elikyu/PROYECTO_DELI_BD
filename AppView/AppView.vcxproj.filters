@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="AccesoUbicacionDestino.cpp" />
+    <ClCompile Include="AccesoUbiDes.cpp" />
+    <ClCompile Include="Boleta.cpp" />
+    <ClCompile Include="BoletaCustomerForm.cpp" />
+    <ClCompile Include="BonusPointsCustomerForm.cpp" />
+    <ClCompile Include="BonusPointsForm.cpp" />
+    <ClCompile Include="CarritoCustomerForm.cpp" />
+    <ClCompile Include="ComboBoxItem.cpp" />
+    <ClCompile Include="ComboBoxItem2.cpp" />
+    <ClCompile Include="CustomerMainForm.cpp" />
+    <ClCompile Include="CustomerRatingForm.cpp" />
+    <ClCompile Include="DeliveryForm.cpp" />
+    <ClCompile Include="DeliverymanRatingForm.cpp" />
+    <ClCompile Include="IForm.cpp" />
+    <ClCompile Include="Login.cpp" />
+    <ClCompile Include="ManagerMainForm.cpp" />
+    <ClCompile Include="OrderListForm.cpp" />
+    <ClCompile Include="ProductInventoryForm.cpp" />
+    <ClCompile Include="ProductsCustomerForm.cpp" />
+    <ClCompile Include="SalesCustomerForm.cpp" />
+    <ClCompile Include="StatisticsForm.cpp" />
+    <ClCompile Include="Ubicacion.cpp" />
+    <ClCompile Include="AllRatingsForm.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AccesoUbicacionDestino.h" />
+    <ClInclude Include="AccesoUbiDes.h" />
+    <ClInclude Include="Boleta.h" />
+    <ClInclude Include="BoletaCustomerForm.h" />
+    <ClInclude Include="BonusPointsCustomerForm.h" />
+    <ClInclude Include="BonusPointsForm.h" />
+    <ClInclude Include="CarritoCustomerForm.h" />
+    <ClInclude Include="ComboBoxItem.h" />
+    <ClInclude Include="ComboBoxItem2.h" />
+    <ClInclude Include="CustomerMainForm.h" />
+    <ClInclude Include="CustomerRatingForm.h" />
+    <ClInclude Include="DeliveryForm.h" />
+    <ClInclude Include="DeliverymanRatingForm.h" />
+    <ClInclude Include="IForm.h" />
+    <ClInclude Include="Login.h" />
+    <ClInclude Include="ManagerMainForm.h" />
+    <ClInclude Include="OrderListForm.h" />
+    <ClInclude Include="ProductInventoryForm.h" />
+    <ClInclude Include="ProductsCustomerForm.h" />
+    <ClInclude Include="SalesCustomerForm.h" />
+    <ClInclude Include="StatisticsForm.h" />
+    <ClInclude Include="Ubicacion.h" />
+    <ClInclude Include="AllRatingsForm.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AccesoUbiDes.resx" />
+    <EmbeddedResource Include="Boleta.resx" />
+  </ItemGroup>
+</Project>
