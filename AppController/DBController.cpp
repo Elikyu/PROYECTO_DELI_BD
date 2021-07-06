@@ -316,6 +316,16 @@ void AppController::DBController::UpdateStatusOrder(Order^ order)
 
 /////////////////////////////////////////////////
 
+SqlConnection^ AppController::DBController::GetConnection()
+{
+    SqlConnection^ conn = gcnew SqlConnection();    String^ connStr = "Server=" + connParam->Server + ";Database=" + connParam->Database +        ";User ID=" + connParam->User + ";Password=" + connParam->Password;    conn->ConnectionString = connStr;    conn->Open();    return conn;
+}
+
+void AppController::DBController::Init()
+{
+    System::Xml::Serialization::XmlSerializer^ reader =        gcnew System::Xml::Serialization::XmlSerializer(ConnectionParam::typeid);    System::IO::StreamReader^ file = nullptr;    try {        file = gcnew System::IO::StreamReader("init.xml");        connParam = (ConnectionParam^)reader->Deserialize(file);    }    catch (...) {        return;    }    finally {        if (file != nullptr) file->Close();    }
+}
+
 /*User*/
 void AppController::DBController::AddUser(User^ user)
 {
@@ -349,12 +359,41 @@ void AppController::DBController::DeleteUser(int userId)
 User^ AppController::DBController::ValidateUser(String^ username, String^ password)
 {
     User^ user = nullptr;
-    userDB->LoadUsers();
+    //LoadUsers();
+    /*
     for (int i = 0; i < userDB->ListDB->Count; i++) {
         if (userDB->ListDB[i]->Username->Equals(username) &&
             userDB->ListDB[i]->Password->Equals(password))
             return userDB->ListDB[i];
     }
+    */
+    /* Paso 1: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /* Paso 2: Se prepara la sentencia */
+    SqlCommand^ comm = gcnew SqlCommand();
+    comm->Connection = conn;
+    comm->CommandText = "SELECT * FROM app_user WHERE username='" + username +
+        "' AND password='" + password + "'";
+
+    /* Paso 3: Se ejecuta la sentencia */
+    SqlDataReader^ dr = comm->ExecuteReader();
+
+    /* Paso 4: Se procesan los resultados */
+    if (dr->Read()) {
+        user = gcnew User();
+        user->Id = (int)dr["id"];
+        user->Username = (String^)dr["username"];
+        user->FirstName = safe_cast<String^>(dr["first_name"]);
+        user->LastName = safe_cast<String^>(dr["last_name"]);
+        user->Category = safe_cast<String^>(dr["category"]);
+        user->Gender = dr["gender"]->ToString()->ToCharArray()[0];
+    }
+
+    /* Paso 5: Se cierra los objetos de conexión!!!!!!!!!! */
+    if (dr != nullptr) dr->Close();
+    if (conn != nullptr) conn->Close();
+
     return user;
 }
 

@@ -1015,6 +1015,7 @@ private: System::Void checkBox4_CheckedChanged(System::Object^ sender, System::E
 	}
 }
 private: System::Void Login_Load(System::Object^ sender, System::EventArgs^ e) {
+	AppController::DBController::Init();
 	this->Show();
 }
 private: System::Void chckCatM_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {

@@ -7,9 +7,11 @@
 #include "ManagerDB.h"
 #include "CarritoDB.h"
 #include "SaleDB.h"
+#include "ConnectionParam.h"
 
 using namespace AppModel;
 using namespace System::Collections::Generic;
+using namespace System::Data::SqlClient;
 
 namespace AppController {
 	public ref class DBController
@@ -23,10 +25,13 @@ namespace AppController {
 		static ManagerDB^ managerDB = gcnew ManagerDB();
 		static CarritoDB^ carritoDB = gcnew CarritoDB();
 		static SaleDB^ saleDB = gcnew SaleDB();
+		static ConnectionParam^ connParam;
+		static SqlConnection^ GetConnection();
+
 	public:
 
 	/*User*/
-
+		static void Init();
 		static void AddUser(User^);
 		static void UpdateUser(User^);
 		static void DeleteUser(int userId);

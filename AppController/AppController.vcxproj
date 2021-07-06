@@ -122,6 +122,7 @@
     <ClInclude Include="AppController.h" />
     <ClInclude Include="BonusPointsDB.h" />
     <ClInclude Include="CarritoDB.h" />
+    <ClInclude Include="ConnectionParam.h" />
     <ClInclude Include="CustomerDB.h" />
     <ClInclude Include="DBController.h" />
     <ClInclude Include="DeliveryManDB.h" />
@@ -137,6 +138,7 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="BonusPointsDB.cpp" />
     <ClCompile Include="CarritoDB.cpp" />
+    <ClCompile Include="ConnectionParam.cpp" />
     <ClCompile Include="CustomerDB.cpp" />
     <ClCompile Include="DBController.cpp" />
     <ClCompile Include="DeliveryManDB.cpp" />
