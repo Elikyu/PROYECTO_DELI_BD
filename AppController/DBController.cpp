@@ -329,8 +329,55 @@ void AppController::DBController::Init()
 /*User*/
 void AppController::DBController::AddUser(User^ user)
 {
+    /*
     userDB->ListDB->Add(user);
     userDB->SaveUsers();
+*/
+// Paso 1: Se obtiene la conexión
+    SqlConnection^ conn = GetConnection();
+
+    // Paso 2:  Se prepara la sentencia
+    SqlCommand^ comm;
+    String^ strCmd;
+    strCmd = "dbo.usp_AddUser";
+    comm = gcnew SqlCommand(strCmd, conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@vusername", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@vpassword", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@vfirst_name", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@vlast_name", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@cgender", System::Data::SqlDbType::Char, 1);
+    comm->Parameters->Add("@vdocument_number", System::Data::SqlDbType::VarChar, 15);
+    comm->Parameters->Add("@vphone_number", System::Data::SqlDbType::VarChar, 50);
+    comm->Parameters->Add("@vaddress", System::Data::SqlDbType::VarChar, 150);
+    comm->Parameters->Add("@vemail", System::Data::SqlDbType::VarChar, 150);
+    comm->Parameters->Add("@vcategory", System::Data::SqlDbType::VarChar, 15);
+
+    SqlParameter^ outputIdParam = gcnew SqlParameter("@iid", System::Data::SqlDbType::Int);
+    outputIdParam->Direction = System::Data::ParameterDirection::Output;
+    comm->Parameters->Add(outputIdParam);
+    comm->Prepare();
+
+    comm->Parameters["@vusername"]->Value = user->Username;
+    comm->Parameters["@vpassword"]->Value = user->Password;
+    comm->Parameters["@vfirst_name"]->Value = user->FirstName;
+    comm->Parameters["@vlast_name"]->Value = user->LastName;
+    comm->Parameters["@cgender"]->Value = user->Gender;
+    comm->Parameters["@vdocument_number"]->Value = user->DocumentNumber;
+    comm->Parameters["@vphone_number"]->Value = user->PhoneNumber;
+    comm->Parameters["@vaddress"]->Value = user->Address;
+    comm->Parameters["@vemail"]->Value = user->Email;
+    comm->Parameters["@vcategory"]->Value = user->Category;
+
+
+    //Paso 3: Se ejecuta la sentencia
+    comm->ExecuteNonQuery();
+
+    //Paso 4: Si se quiere procesar la salida.
+    int output_id = Convert::ToInt32(comm->Parameters["@id"]->Value);
+
+    //Paso 5: Se cierra la conexión
+    conn->Close();
 
 }
 
@@ -387,7 +434,6 @@ User^ AppController::DBController::ValidateUser(String^ username, String^ passwo
         user->FirstName = safe_cast<String^>(dr["first_name"]);
         user->LastName = safe_cast<String^>(dr["last_name"]);
         user->Category = safe_cast<String^>(dr["category"]);
-        user->Gender = dr["gender"]->ToString()->ToCharArray()[0];
     }
 
     /* Paso 5: Se cierra los objetos de conexión!!!!!!!!!! */
