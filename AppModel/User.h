@@ -22,7 +22,6 @@ namespace AppModel {
         property String^ Email;
         property String^ Category; // Categoría me indica si es Cliente, Repartidor o Manager
         property String^ Address;
-        property array<Byte>^ Photo;
         property char Status;
 
         User() {}

@@ -9,7 +9,7 @@
  * Product implementation
  */
 
-AppModel::Product::Product(int id, String^ name, String^ description, double price, int stockTotal, char status, array<Byte>^ photo, String^ brand, int initialQuantity, int quantitySold)
+AppModel::Product::Product(int id, String^ name, String^ description, double price, int stockTotal, char status, array<Byte>^ photo, String^ brand, int quantitySold)
 {
 	Id = id;
 	Name = name;
@@ -18,6 +18,5 @@ AppModel::Product::Product(int id, String^ name, String^ description, double pri
 	StockTotal = stockTotal;
 	Status = status;
 	Photo = photo;
-	InitialQuantity = initialQuantity;
 	QuantitySold = quantitySold;
 }

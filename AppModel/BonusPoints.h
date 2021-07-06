@@ -8,6 +8,7 @@ namespace AppModel {
     [Serializable]
     public ref class BonusPoints {
     public:
+       property int Id;
        property int PointsQuantity;
        property int SolesQuantity;
        //property int PointsMin;

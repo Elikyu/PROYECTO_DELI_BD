@@ -227,8 +227,6 @@ namespace AppView {
 							   "" + orderList[i]->CustomerRating
 					   });
 				   }
-
-				   //DeliveryManRatingAverage
 			   }
 
 	}; // promedios

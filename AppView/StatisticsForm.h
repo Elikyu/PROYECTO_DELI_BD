@@ -426,10 +426,10 @@ namespace AppView {
 					for (int i = 0; i < orderList->Count; i++) {
 						if (orderList[i]->DeliveryMan != nullptr) {
 							deliverymanFullName = orderList[i]->DeliveryMan->FirstName + " " + orderList[i]->DeliveryMan->LastName;
-							chartDeliverymanRating->Series["Calificación"]->Points->Add(orderList[i]->DeliveryManRatingAverage);
+							chartDeliverymanRating->Series["Calificación"]->Points->Add(orderList[i]->DeliveryMan->DeliveryManRatingAverage);
 							chartDeliverymanRating->Series["Calificación"]->Points[i]->AxisLabel = deliverymanFullName;
 							chartDeliverymanRating->Series["Calificación"]->Points[i]->LegendText = deliverymanFullName;
-							chartDeliverymanRating->Series["Calificación"]->Points[i]->Label = "" + orderList[i]->DeliveryManRatingAverage;
+							chartDeliverymanRating->Series["Calificación"]->Points[i]->Label = "" + orderList[i]->DeliveryMan->DeliveryManRatingAverage;
 						}
 					}
 				//}

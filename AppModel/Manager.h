@@ -16,8 +16,7 @@ namespace AppModel {
 
         Manager() {}
         Manager (int id, String^ firstName, String^ lastName,
-            String^ phoneNumber, array <Byte>^ photo,
-            int verificationcode, int employeesNumber);
+            String^ phoneNumber, int verificationcode, int employeesNumber);
     };
 }
 

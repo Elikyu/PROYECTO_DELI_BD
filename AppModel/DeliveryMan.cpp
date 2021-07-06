@@ -9,7 +9,7 @@
  * DeliveryMan implementation
  */
 
-AppModel::DeliveryMan::DeliveryMan(int id, String^ userName, String^ password, String^ firstName, String^ lastName, char gender, String^ documentnumber, String^ phonenumber, String^ email, String^ category, String^ address, char status, double quota, array<Byte>^ photo, int verificationcode, bool available)
+AppModel::DeliveryMan::DeliveryMan(int id, String^ userName, String^ password, String^ firstName, String^ lastName, char gender, String^ documentnumber, String^ phonenumber, String^ email, String^ category, String^ address, char status, double quota, int verificationcode, double  deliveryManRatingAverage)
 {
 	Id = id;
 	Username = userName;
@@ -23,7 +23,6 @@ AppModel::DeliveryMan::DeliveryMan(int id, String^ userName, String^ password, S
 	Email = email;
 	Address = address;
 	Status = status;
-	Photo = photo;
 	VerificationCode = verificationcode;
-	Available = available;
+	DeliveryManRatingAverage = deliveryManRatingAverage;
 }

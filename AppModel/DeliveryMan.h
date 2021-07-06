@@ -13,13 +13,13 @@ namespace AppModel {
     public:
   
         property double Quota;
-
         property bool Available;
+        property double  DeliveryManRatingAverage;
 
         DeliveryMan() {}
         DeliveryMan(int id,String^ userName,String^ password, String^ firstName, String^ lastName, 
            char gender, String^ documentnumber,String^phonenumber,String^ email,String^ category,
-            String^ address,char status,double quota, array <Byte>^ photo, int verificationcode, bool available);
+            String^ address,char status,double quota, int verificationcode, double  deliveryManRatingAverage);
 
     };
 }
