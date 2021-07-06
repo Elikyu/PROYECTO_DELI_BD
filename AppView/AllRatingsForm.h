@@ -231,5 +231,5 @@ namespace AppView {
 				   //DeliveryManRatingAverage
 			   }
 
-	};
+	}; // promedios
 }
