@@ -509,7 +509,6 @@ User^ AppController::DBController::ValidateUser(String^ username, String^ passwo
     /* Paso 5: Se cierra los objetos de conexión!!!!!!!!!! */
     if (dr != nullptr) dr->Close();
     if (conn != nullptr) conn->Close();
-
     return user;
 }
 
