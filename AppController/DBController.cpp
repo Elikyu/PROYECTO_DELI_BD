@@ -17,6 +17,7 @@ SqlConnection^ AppController::DBController::GetConnection()
 }
 
 /*Producto*/
+//AddProduct
 void AppController::DBController::AddProduct(Product^ product) {
     SqlConnection^ conn = GetConnection();
     String^ strCmd;
