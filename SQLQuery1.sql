@@ -90,7 +90,7 @@ CREATE TABLE PRODUCT(
 	status CHAR(1) NULL,
 	photo IMAGE NULL,
 	brand VARCHAR(50) NOT NULL,
-	quantitySold INT NOT NULL,  
+	quantitySold INT  NULL,  
 )
 GO
 CREATE TABLE HEALTHCARE_PRODUCT(
@@ -322,15 +322,15 @@ CREATE PROCEDURE dbo.usp_AddGroceries(
 	@name VARCHAR(250),
 	@description VARCHAR(500),
 	@price DECIMAL(10,2),
-	@stocktotal INT,
+	@stockTotal INT,
 	@brand VARCHAR(50),
 	@quantitySold INT,  
 	@photo IMAGE,
 	@id INT OUT
  ) AS 
 	BEGIN
-		INSERT INTO PRODUCT(name, description, price, stocktotal, status, photo, brand, quantitySold)
-		SELECT @name, @description, @price, @stocktotal, 'A', @photo, @brand, @quantitySold
+		INSERT INTO PRODUCT(name, description, price, stockTotal, status, photo, brand, quantitySold)
+		SELECT @name, @description, @price, @stockTotal, 'A', @photo, @brand, @quantitySold
 		SET @id = SCOPE_IDENTITY()	
 	
 		INSERT INTO GROCERY_PRODUCT(id)
@@ -511,7 +511,7 @@ AS
 	WHERE p.id = @id AND p.id = bp.id
 GO
 
-/*ADD ORDER*/
+/*RegisterSale*/
 
 IF EXISTS ( SELECT * 
             FROM   sysobjects 
@@ -619,7 +619,7 @@ AS
 			p.description LIKE '%' + @data + '%') AND
 			bp.id = p.id
 	ORDER BY name
-GO
+GO	
 
 /*QueryAllHealthCareByCoincidence*/
 IF EXISTS ( SELECT * 
@@ -641,3 +641,4 @@ AS
 			ep.id = p.id			
 	ORDER BY name
 GO
+

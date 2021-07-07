@@ -19,6 +19,7 @@ SqlConnection^ AppController::DBController::GetConnection()
 /*Producto*/
 //AddProduct
 void AppController::DBController::AddProduct(Product^ product) {
+
     SqlConnection^ conn = GetConnection();
     String^ strCmd;
     if (product->GetType() == Groceries::typeid) {
@@ -33,17 +34,18 @@ void AppController::DBController::AddProduct(Product^ product) {
         comm->Prepare();
 
         Groceries^ b = dynamic_cast<Groceries^>(product);
-        comm->Parameters["@name"]->Value = ((Groceries^)product)->Name;
+        comm->Parameters["@name"]->Value = b->Name;
         comm->Parameters["@description"]->Value = b->Description;
         comm->Parameters["@price"]->Value = b->Price;
         comm->Parameters["@stockTotal"]->Value = b->StockTotal;
+        comm->Parameters["@photo"]->Value = b->Photo;
         comm->Parameters["@brand"]->Value = b->Brand;
         comm->Parameters["@quantitySold"]->Value = b->QuantitySold;
-
+        /*
         if (product->Photo != nullptr)
             comm->Parameters["@photo"]->Value = product->Photo;
         else
-            comm->Parameters["@photo"]->Value = DBNull::Value;
+            comm->Parameters["@photo"]->Value = DBNull::Value;*/
         //Paso 3: Se ejecuta la sentencia
         comm->ExecuteNonQuery();
         //Paso 4: Se procesa el resultado.
@@ -62,7 +64,6 @@ void AppController::DBController::AddProduct(Product^ product) {
         comm->Parameters["@price"]->Scale = 2;
         comm->Parameters->Add("@stockTotal", System::Data::SqlDbType::Int);
         comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);
-
         comm->Parameters->Add("@brand", System::Data::SqlDbType::VarChar, 250);
         comm->Parameters->Add("@quantitySold", System::Data::SqlDbType::VarChar, 250);
 
@@ -90,90 +91,103 @@ void AppController::DBController::AddProduct(Product^ product) {
 
     conn->Close();
 
-    /*
-    SqlConnection^ conn = GetConnection();    SqlCommand^ comm = gcnew SqlCommand();    String^ strCmd;    if (product->GetType() == Groceries::typeid) {        strCmd = "dbo.usp_AddGroceries";        comm = gcnew SqlCommand(strCmd, conn);        comm->CommandType = System::Data::CommandType::StoredProcedure;        comm->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 250);        comm->Parameters->Add("@description", System::Data::SqlDbType::VarChar, 500);        comm->Parameters->Add("@price", System::Data::SqlDbType::Decimal, 10);        comm->Parameters["@price"]->Precision = 10;        comm->Parameters["@price"]->Scale = 2;        comm->Parameters->Add("@stockTotal", System::Data::SqlDbType::Int);        //comm->Parameters->Add("@status", System::Data::SqlDbType::Char, 1);        comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);        comm->Parameters->Add("@brand", System::Data::SqlDbType::VarChar, 250);        comm->Parameters->Add("@quantitySold", System::Data::SqlDbType::VarChar, 250);        SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
-        outputIdParam->Direction = System::Data::ParameterDirection::Output;
-        comm->Parameters->Add(outputIdParam);
-        comm->Prepare();
+}
 
-        Groceries^ b = dynamic_cast<Groceries^>(product);
-        comm->Parameters["@name"]->Value = ((Groceries^)product)->Name;
-        comm->Parameters["@description"]->Value = b->Description;
-        comm->Parameters["@price"]->Value = b->Price;
-        comm->Parameters["@stockTotal"]->Value = b->StockTotal;
-        comm->Parameters["@brand"]->Value = b->Brand;
-        comm->Parameters["@quantitySold"]->Value = b->QuantitySold;
+void AppController::DBController::UpdateProduct(Product^ product)
+{
+    SqlConnection^ conn = GetConnection();
 
-        //comm->Parameters["@status"]->Value = "A";
-        if (product->Photo != nullptr)
-            comm->Parameters["@photo"]->Value = product->Photo;
-        else
-            comm->Parameters["@photo"]->Value = DBNull::Value;
-
-        //Paso 3: Se ejecuta la sentencia
-        comm->ExecuteNonQuery();
-        //Paso 4: Se procesa el resultado.
-        int output_id = Convert::ToInt32(comm->Parameters["@id"]->Value); }
-    else if (product->GetType() == HealthCare::typeid) {
-        strCmd = "dbo.usp_AddHealthCare";
-        comm = gcnew SqlCommand(strCmd, conn);
+    /* 2do paso: Se prepara la sentencia */
+  
+    String^ strCmd;
+    if (product->GetType() == Groceries::typeid) {
+        strCmd = "dbo.usp_UpdateGroceries";
+        SqlCommand^  comm = gcnew SqlCommand(strCmd, conn);
         comm->CommandType = System::Data::CommandType::StoredProcedure;
+        comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
         comm->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 250);
         comm->Parameters->Add("@description", System::Data::SqlDbType::VarChar, 500);
         comm->Parameters->Add("@price", System::Data::SqlDbType::Decimal, 10);
         comm->Parameters["@price"]->Precision = 10;
         comm->Parameters["@price"]->Scale = 2;
         comm->Parameters->Add("@stockTotal", System::Data::SqlDbType::Int);
-        comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);
-
         comm->Parameters->Add("@brand", System::Data::SqlDbType::VarChar, 250);
-        comm->Parameters->Add("@quantitySold", System::Data::SqlDbType::VarChar, 250);
-
-
-        SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
-        outputIdParam->Direction = System::Data::ParameterDirection::Output;
-        comm->Parameters->Add(outputIdParam);
+        comm->Parameters->Add("@status", System::Data::SqlDbType::Char, 1);
+        comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);
 
         comm->Prepare();
 
-        HealthCare^ b = dynamic_cast<HealthCare^>(product);
+        Groceries^ b = dynamic_cast<Groceries^>(product);
+        comm->Parameters["@id"]->Value = b->Id;
         comm->Parameters["@name"]->Value = b->Name;
         comm->Parameters["@description"]->Value = b->Description;
         comm->Parameters["@price"]->Value = b->Price;
         comm->Parameters["@stockTotal"]->Value = b->StockTotal;
-        comm->Parameters["@photo"]->Value = b->Photo;
         comm->Parameters["@brand"]->Value = b->Brand;
-        comm->Parameters["@quantitySold"]->Value = b->QuantitySold;
+        comm->Parameters["@status"]->Value = "A";
+        if (b->Photo != nullptr)
+            comm->Parameters["@photo"]->Value = b->Photo;
+        else
+            comm->Parameters["@photo"]->Value = DBNull::Value;
 
-        //conn->Open();
         comm->ExecuteNonQuery();
-        //Para leer el dato de salida
-        int id_output = Convert::ToInt32(comm->Parameters["@id"]->Value);
+    }
+    else if (product->GetType() == HealthCare::typeid) {
+        strCmd = "dbo.usp_UpdateHealthCare";
+        SqlCommand^  comm = gcnew SqlCommand(strCmd, conn);
+        comm->CommandType = System::Data::CommandType::StoredProcedure;
+        comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
+        comm->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 250);
+        comm->Parameters->Add("@description", System::Data::SqlDbType::VarChar, 500);
+        comm->Parameters->Add("@price", System::Data::SqlDbType::Decimal, 10);
+        comm->Parameters["@price"]->Precision = 10;
+        comm->Parameters["@price"]->Scale = 2;
+        comm->Parameters->Add("@stockTotal", System::Data::SqlDbType::Int);
+        comm->Parameters->Add("@brand", System::Data::SqlDbType::VarChar, 250);
+        comm->Parameters->Add("@status", System::Data::SqlDbType::Char, 1);
+        comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);
+
+        comm->Prepare();
+
+        HealthCare^ b = dynamic_cast<HealthCare^>(product);
+        comm->Parameters["@id"]->Value = b->Id;
+        comm->Parameters["@name"]->Value = b->Name;
+        comm->Parameters["@description"]->Value = b->Description;
+        comm->Parameters["@price"]->Value = b->Price;
+        comm->Parameters["@stockTotal"]->Value = b->StockTotal;
+        comm->Parameters["@brand"]->Value = b->Brand;
+        comm->Parameters["@status"]->Value = "A";
+        if (b->Photo != nullptr)
+            comm->Parameters["@photo"]->Value = b->Photo;
+        else
+            comm->Parameters["@photo"]->Value = DBNull::Value;
+
+        comm->ExecuteNonQuery();
     }
 
-    //Paso 5: Se cierra la conexión
-    conn->Close(); */
-}
-
-void AppController::DBController::UpdateProduct(Product^ product)
-{
-    for (int i = 0; i < productDB->ListDB->Count; i++)
-        if (productDB->ListDB[i]->Id == product->Id) { // verificando id
-            productDB->ListDB[i] = product;  // actualiza el producto anterior con el actual
-            productDB->Persist();
-            return;
-        }
+    //IMPORTANTE Paso 4: Cerramos la conexión con la BD
+    if (conn != nullptr) conn->Close();
 }
 
 void AppController::DBController::DeleteProduct(int productId)
 {
-    for (int i = 0; i < productDB->ListDB->Count; i++)
-        if (productDB->ListDB[i]->Id == productId) { // si coincide, se procede a eliminar
-            //productDB->ListDB[i]->Status = 'I';  // en lugar de borrarlo (por temas de seguridad), se le cambia de estado: INACTIVO
-            productDB->ListDB->RemoveAt(i);
-            productDB->Persist();
-            return;
-        }
+    SqlConnection^ conn = GetConnection();
+
+    /* 2do paso: Se prepara la sentencia */
+    SqlCommand^ comm;
+    String^ strCmd;
+    strCmd = "dbo.usp_DeleteProduct";
+    comm = gcnew SqlCommand(strCmd, conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
+    comm->Prepare();
+
+    comm->Parameters["@id"]->Value = productId;
+    //conn->Open();
+    comm->ExecuteNonQuery();
+
+    //IMPORTANTE Paso 4: Cerramos la conexión con la BD
+    conn->Close();
 }
 
 List<Product^>^ AppController::DBController::QueryAllProducts()
@@ -191,24 +205,79 @@ int AppController::DBController::QueryLastProductId()
 
 List<Groceries^>^ AppController::DBController::QueryAllGroceries()
 {
+    List<Groceries^>^ list = gcnew List<Groceries^>();
+    /*
     productDB->LoadFromBinaryFile();
-    List<Groceries^>^ grocerieslist = gcnew List<Groceries^>();
     for (int i = 0; i < productDB->ListDB->Count; i++) {
-        if (productDB->ListDB[i]->GetType() == Groceries::typeid && productDB->ListDB[i]->Status == 'A') {
-            grocerieslist->Add(dynamic_cast<Groceries^>(productDB->ListDB[i]));
+        if (productDB->ListDB[i]->GetType() == Book::typeid && productDB->ListDB[i]->Status == 'A') {
+            list->Add(dynamic_cast<Book^>(productDB->ListDB[i]));
         }
     }
-    return grocerieslist;
+    */
+    /*Paso 1: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /*Paso 2: Se prepara la sentencia */
+    SqlCommand^ comm = gcnew SqlCommand("usp_QueryAllGroceries", conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+
+    /*Paso 3: Se ejecuta la sentencia */
+    SqlDataReader^ reader = comm->ExecuteReader();
+
+    /*Paso 4: Se procesan los resultados */
+    while (reader->Read()) {
+        Groceries^ b = gcnew Groceries();
+        b->Id = Int32::Parse(reader["id"]->ToString());
+        b->Name = reader["name"]->ToString();
+        b->Description = reader["description"]->ToString();
+        b->Price = Double::Parse(reader["price"]->ToString());
+        b->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
+        b->Brand = reader["brand"]->ToString();
+       
+        list->Add(b);
+    }
+    /*Paso 5: Se cierran los objetos de conexión */
+    if (reader != nullptr) reader->Close();
+    if (conn != nullptr) conn->Close();
+
+    return list;
+
 }
 
 List<HealthCare^>^ AppController::DBController::QueryAllHealthCare()
 {
-    productDB->LoadFromBinaryFile();
-    List <HealthCare^>^ healthcareList = gcnew List<HealthCare^>();
-    for (int i = 0; i < productDB->ListDB->Count; i++)
-        if (productDB->ListDB[i]->GetType() == HealthCare::typeid)
-            healthcareList->Add((HealthCare^)productDB->ListDB[i]);
-    return healthcareList;
+    List<HealthCare^>^ list = gcnew List<HealthCare^>();
+
+    
+    /*Paso 1: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /*Paso 2: Se prepara la sentencia */
+    SqlCommand^ comm = gcnew SqlCommand("usp_QueryAllHealthCare", conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+
+    /*Paso 3: Se ejecuta la sentencia */
+    SqlDataReader^ reader = comm->ExecuteReader();
+
+    /*Paso 4: Se procesan los resultados */
+    while (reader->Read()) {
+        HealthCare^ b = gcnew HealthCare();
+        b->Id = Int32::Parse(reader["id"]->ToString());
+        b->Name = reader["name"]->ToString();
+        b->Description = reader["description"]->ToString();
+        b->Price = Double::Parse(reader["price"]->ToString());
+        b->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
+
+        b->Brand =reader["brand"]->ToString();
+
+        list->Add(b);
+    }
+    /*Paso 5: Se cierran los objetos de conexión */
+    if (reader != nullptr) reader->Close();
+    if (conn != nullptr) conn->Close();
+
+    return list;
+
 }
 
 int AppController::DBController::ReturnIDbyProductName(String^ name)
@@ -229,20 +298,84 @@ Product^ AppController::DBController::QueryProductById(int productId)
 
 Groceries^ AppController::DBController::QueryGroceriesById(int productId)
 {
-    for (int i = 0; i < productDB->ListDB->Count; i++)
-        if (productDB->ListDB[i]->Id == productId &&
-            productDB->ListDB[i]->GetType() == Groceries::typeid)
-            return (Groceries^)productDB->ListDB[i]; // se requeria un casting para evitar el error
-    return nullptr;
+    SqlConnection^ conn = GetConnection();
+
+    /* 2do paso: Se prepara la sentencia */
+    SqlCommand^ comm;
+
+    comm = gcnew SqlCommand("usp_QueryGroceriesById", conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
+    comm->Prepare();
+    comm->Parameters["@id"]->Value = productId;
+
+    /* 3er paso: Se ejecuta la sentencia */
+    SqlDataReader^ reader = comm->ExecuteReader();
+
+    /* 4to paso: Se procesa el resultado */
+    Groceries^ s = nullptr;
+    if (reader->Read()) {
+        s = gcnew Groceries();
+        if (!DBNull::Value->Equals(reader["id"]))
+            s->Id = Int32::Parse(reader["id"]->ToString());
+        if (!DBNull::Value->Equals(reader["name"]))
+            s->Name = reader["name"]->ToString();
+        if (!DBNull::Value->Equals(reader["description"]))
+            s->Description = reader["description"]->ToString();
+        if (!DBNull::Value->Equals(reader["price"]))
+            s->Price = Double::Parse(reader["price"]->ToString());
+        if (!DBNull::Value->Equals(reader["brand"]))
+            s->Brand = reader["brand"]->ToString();
+        if (!DBNull::Value->Equals(reader["stockTotal"]))
+            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
+        if (!DBNull::Value->Equals(reader["photo"]))
+            s->Photo = (array<Byte>^)reader["photo"];
+    }
+
+    /* Paso 5: Cerramos la conexión con la BD */
+    if (conn != nullptr)	conn->Close();
+    return s;
 }
 
 HealthCare^ AppController::DBController::QueryHealthCareById(int productId)
 {
-    for (int i = 0; i < productDB->ListDB->Count; i++)
-        if (productDB->ListDB[i]->Id == productId &&
-            productDB->ListDB[i]->GetType() == HealthCare::typeid)
-            return (HealthCare^)productDB->ListDB[i]; // se requeria un casting para evitar el error
-    return nullptr;
+    SqlConnection^ conn = GetConnection();
+
+    /* 2do paso: Se prepara la sentencia */
+    
+
+    SqlCommand^  comm = gcnew SqlCommand("usp_QueryHealthCareById", conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
+    comm->Prepare();
+    comm->Parameters["@id"]->Value = productId;
+
+    /* 3er paso: Se ejecuta la sentencia */
+    SqlDataReader^ reader = comm->ExecuteReader();
+
+    /* 4to paso: Se procesa el resultado */
+    HealthCare^ s = nullptr;
+    if (reader->Read()) {
+        s = gcnew HealthCare();
+        if (!DBNull::Value->Equals(reader["id"]))
+            s->Id = Int32::Parse(reader["id"]->ToString());
+        if (!DBNull::Value->Equals(reader["name"]))
+            s->Name = reader["name"]->ToString();
+        if (!DBNull::Value->Equals(reader["description"]))
+            s->Description = reader["description"]->ToString();
+        if (!DBNull::Value->Equals(reader["price"]))
+            s->Price = Double::Parse(reader["price"]->ToString());
+        if (!DBNull::Value->Equals(reader["brand"]))
+            s->Brand = reader["brand"]->ToString();
+        if (!DBNull::Value->Equals(reader["stockTotal"]))
+            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
+        if (!DBNull::Value->Equals(reader["photo"]))
+            s->Photo = (array<Byte>^)reader["photo"];
+    }
+
+    /* Paso 5: Cerramos la conexión con la BD */
+    if (conn != nullptr)	conn->Close();
+    return s;
 }
 
 List<Groceries^>^ AppController::DBController::QueryAllGroceriesByCoincidence(String^)

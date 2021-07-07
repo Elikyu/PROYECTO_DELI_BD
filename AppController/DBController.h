@@ -17,6 +17,8 @@ namespace AppController {
 	public ref class DBController
 	{
 	private:
+		static ConnectionParam^ connParam;
+		static SqlConnection^ GetConnection();
 		static ProductDB^ productDB = gcnew ProductDB();
 		static BonusPointsDB^ bonuspointsDB = gcnew BonusPointsDB();
 		static UserDB^ userDB = gcnew UserDB();
@@ -25,8 +27,7 @@ namespace AppController {
 		static ManagerDB^ managerDB = gcnew ManagerDB();
 		static CarritoDB^ carritoDB = gcnew CarritoDB();
 		static SaleDB^ saleDB = gcnew SaleDB();
-		static ConnectionParam^ connParam;
-		static SqlConnection^ GetConnection();
+
 
 	public:
 
