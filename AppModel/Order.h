@@ -15,7 +15,7 @@ namespace AppModel {
     public ref class Order {
     public:
         property int Id;
-        property String^ Product;
+        //property String^ Product;
         property char Status;  // en espera, entregado, en camino
         property String^ Date;
         property char PaymentType; // siempre sera con tarjeta de credito

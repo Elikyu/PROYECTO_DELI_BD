@@ -6,11 +6,87 @@ using namespace System::Runtime::Serialization;
 using namespace System::Runtime::Serialization::Formatters::Binary;
 using namespace System::Xml::Serialization;
 
+void AppController::DBController::Init()
+{
+    System::Xml::Serialization::XmlSerializer^ reader =        gcnew System::Xml::Serialization::XmlSerializer(ConnectionParam::typeid);    System::IO::StreamReader^ file = nullptr;    try {        file = gcnew System::IO::StreamReader("init.xml");        connParam = (ConnectionParam^)reader->Deserialize(file);    }    catch (...) {        return;    }    finally {        if (file != nullptr) file->Close();    }
+}
+
+SqlConnection^ AppController::DBController::GetConnection()
+{
+    SqlConnection^ conn = gcnew SqlConnection();    String^ connStr = "Server=" + connParam->Server + ";Database=" + connParam->Database +        ";User ID=" + connParam->User + ";Password=" + connParam->Password;    conn->ConnectionString = connStr;    conn->Open();    return conn;
+}
+
 /*Producto*/
 void AppController::DBController::AddProduct(Product^ product)
 {
-    productDB->ListDB->Add(product);
-    productDB->Persist();
+    //productDB->ListDB->Add(product);
+    //productDB->Persist();
+    /*
+    SqlConnection^ conn = GetConnection();    // Paso 2:  Se prepara la sentencia    SqlCommand^ comm;    String^ strCmd;    if (product->GetType() == Groceries::typeid) {        strCmd = "dbo.usp_AddGroceries";        comm = gcnew SqlCommand(strCmd, conn);        comm->CommandType = System::Data::CommandType::StoredProcedure;        comm->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 250);        comm->Parameters->Add("@description", System::Data::SqlDbType::VarChar, 500);        comm->Parameters->Add("@price", System::Data::SqlDbType::Decimal, 10);        comm->Parameters["@price"]->Precision = 10;        comm->Parameters["@price"]->Scale = 2;        comm->Parameters->Add("@stockTotal", System::Data::SqlDbType::Int);        //comm->Parameters->Add("@status", System::Data::SqlDbType::Char, 1);        comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);        comm->Parameters->Add("@brand", System::Data::SqlDbType::VarChar, 250);        comm->Parameters->Add("@quantitySold", System::Data::SqlDbType::VarChar, 250);        SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
+        outputIdParam->Direction = System::Data::ParameterDirection::Output;
+        comm->Parameters->Add(outputIdParam);
+        comm->Prepare();
+
+        Groceries^ b = dynamic_cast<Groceries^>(product);
+        comm->Parameters["@name"]->Value = ((Groceries^)product)->Name;
+        comm->Parameters["@description"]->Value = b->Description;
+        comm->Parameters["@price"]->Value = b->Price;
+        comm->Parameters["@stockTotal"]->Value = b->StockTotal;
+        comm->Parameters["@brand"]->Value = b->Brand;
+        comm->Parameters["@quantitySold"]->Value = b->QuantitySold;
+
+        //comm->Parameters["@status"]->Value = "A";
+        if (product->Photo != nullptr)
+            comm->Parameters["@photo"]->Value = product->Photo;
+        else
+            comm->Parameters["@photo"]->Value = DBNull::Value;
+
+        //Paso 3: Se ejecuta la sentencia
+        comm->ExecuteNonQuery();
+        //Paso 4: Se procesa el resultado.
+        int output_id = Convert::ToInt32(comm->Parameters["@id"]->Value);
+ 
+    }
+    else if (product->GetType() == HealthCare::typeid) {
+        strCmd = "dbo.usp_AddHealthCare";
+        comm = gcnew SqlCommand(strCmd, conn);
+        comm->CommandType = System::Data::CommandType::StoredProcedure;
+
+        comm->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 250);
+        comm->Parameters->Add("@description", System::Data::SqlDbType::VarChar, 500);
+        comm->Parameters->Add("@price", System::Data::SqlDbType::Decimal, 10);
+        comm->Parameters["@price"]->Precision = 10;
+        comm->Parameters["@price"]->Scale = 2;
+        comm->Parameters->Add("@stockTotal", System::Data::SqlDbType::Int);
+        comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);
+
+        comm->Parameters->Add("@brand", System::Data::SqlDbType::VarChar, 250);
+        comm->Parameters->Add("@quantitySold", System::Data::SqlDbType::VarChar, 250);
+
+
+        SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
+        outputIdParam->Direction = System::Data::ParameterDirection::Output;
+        comm->Parameters->Add(outputIdParam);
+
+        comm->Prepare();
+
+        HealthCare^ b = dynamic_cast<HealthCare^>(product);
+        comm->Parameters["@name"]->Value = b->Name;
+        comm->Parameters["@description"]->Value = b->Description;
+        comm->Parameters["@price"]->Value = b->Price;
+        comm->Parameters["@stockTotal"]->Value = b->StockTotal;
+        comm->Parameters["@photo"]->Value = b->Photo;
+        comm->Parameters["@brand"]->Value = b->Brand;
+        comm->Parameters["@quantitySold"]->Value = b->QuantitySold;
+
+        //conn->Open();
+        comm->ExecuteNonQuery();
+        //Para leer el dato de salida
+        int id_output = Convert::ToInt32(comm->Parameters["@id"]->Value);
+    }
+
+    //Paso 5: Se cierra la conexión
+    conn->Close(); */
 }
 
 void AppController::DBController::UpdateProduct(Product^ product)
@@ -316,15 +392,9 @@ void AppController::DBController::UpdateStatusOrder(Order^ order)
 
 /////////////////////////////////////////////////
 
-SqlConnection^ AppController::DBController::GetConnection()
-{
-    SqlConnection^ conn = gcnew SqlConnection();    String^ connStr = "Server=" + connParam->Server + ";Database=" + connParam->Database +        ";User ID=" + connParam->User + ";Password=" + connParam->Password;    conn->ConnectionString = connStr;    conn->Open();    return conn;
-}
 
-void AppController::DBController::Init()
-{
-    System::Xml::Serialization::XmlSerializer^ reader =        gcnew System::Xml::Serialization::XmlSerializer(ConnectionParam::typeid);    System::IO::StreamReader^ file = nullptr;    try {        file = gcnew System::IO::StreamReader("init.xml");        connParam = (ConnectionParam^)reader->Deserialize(file);    }    catch (...) {        return;    }    finally {        if (file != nullptr) file->Close();    }
-}
+
+
 
 /*User*/
 void AppController::DBController::AddUser(User^ user)
