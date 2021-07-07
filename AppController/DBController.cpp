@@ -21,8 +21,8 @@ void AppController::DBController::AddProduct(Product^ product)
 {
     //productDB->ListDB->Add(product);
     //productDB->Persist();
-    /*
-    SqlConnection^ conn = GetConnection();    // Paso 2:  Se prepara la sentencia    SqlCommand^ comm;    String^ strCmd;    if (product->GetType() == Groceries::typeid) {        strCmd = "dbo.usp_AddGroceries";        comm = gcnew SqlCommand(strCmd, conn);        comm->CommandType = System::Data::CommandType::StoredProcedure;        comm->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 250);        comm->Parameters->Add("@description", System::Data::SqlDbType::VarChar, 500);        comm->Parameters->Add("@price", System::Data::SqlDbType::Decimal, 10);        comm->Parameters["@price"]->Precision = 10;        comm->Parameters["@price"]->Scale = 2;        comm->Parameters->Add("@stockTotal", System::Data::SqlDbType::Int);        //comm->Parameters->Add("@status", System::Data::SqlDbType::Char, 1);        comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);        comm->Parameters->Add("@brand", System::Data::SqlDbType::VarChar, 250);        comm->Parameters->Add("@quantitySold", System::Data::SqlDbType::VarChar, 250);        SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
+    
+    SqlConnection^ conn = GetConnection();    // Paso 2:  Se prepara la sentencia    //SqlCommand^ comm;    String^ strCmd;    if (product->GetType() == Groceries::typeid) {        strCmd = "dbo.usp_AddGroceries";        SqlCommand^ comm = gcnew SqlCommand(strCmd, conn);        comm->CommandType = System::Data::CommandType::StoredProcedure;        comm->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 250);        comm->Parameters->Add("@description", System::Data::SqlDbType::VarChar, 500);        comm->Parameters->Add("@price", System::Data::SqlDbType::Decimal, 10);        comm->Parameters["@price"]->Precision = 10;        comm->Parameters["@price"]->Scale = 2;        comm->Parameters->Add("@stockTotal", System::Data::SqlDbType::Int);        //comm->Parameters->Add("@status", System::Data::SqlDbType::Char, 1);        comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);        comm->Parameters->Add("@brand", System::Data::SqlDbType::VarChar, 250);        comm->Parameters->Add("@quantitySold", System::Data::SqlDbType::VarChar, 250);        SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
         outputIdParam->Direction = System::Data::ParameterDirection::Output;
         comm->Parameters->Add(outputIdParam);
         comm->Prepare();
@@ -36,11 +36,12 @@ void AppController::DBController::AddProduct(Product^ product)
         comm->Parameters["@quantitySold"]->Value = b->QuantitySold;
 
         //comm->Parameters["@status"]->Value = "A";
-        if (product->Photo != nullptr)
+        if (product->Photo != nullptr) {
             comm->Parameters["@photo"]->Value = product->Photo;
-        else
+        }
+        else {
             comm->Parameters["@photo"]->Value = DBNull::Value;
-
+        }
         //Paso 3: Se ejecuta la sentencia
         comm->ExecuteNonQuery();
         //Paso 4: Se procesa el resultado.
@@ -49,7 +50,7 @@ void AppController::DBController::AddProduct(Product^ product)
     }
     else if (product->GetType() == HealthCare::typeid) {
         strCmd = "dbo.usp_AddHealthCare";
-        comm = gcnew SqlCommand(strCmd, conn);
+        SqlCommand^ comm = gcnew SqlCommand(strCmd, conn);
         comm->CommandType = System::Data::CommandType::StoredProcedure;
 
         comm->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 250);
@@ -86,7 +87,7 @@ void AppController::DBController::AddProduct(Product^ product)
     }
 
     //Paso 5: Se cierra la conexión
-    conn->Close(); */
+    conn->Close(); 
 }
 
 void AppController::DBController::UpdateProduct(Product^ product)
