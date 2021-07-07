@@ -851,9 +851,9 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 				c->CustomerPoints = 0;
 
 				if (UserManager::ConfirmCustomer(c)) {
-					int id= UserManager::QueryLastUserId() + 1;
-					u->Id = id;
-					c->Id = id;
+					//int id= UserManager::QueryLastUserId() + 1;
+					//u->Id = id;
+					//c->Id = id;
 					UserManager::AddUser(u);
 					UserManager::AddCustomers(c);
 					panelRegister->Visible = false;
