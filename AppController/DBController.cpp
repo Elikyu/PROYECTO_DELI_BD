@@ -234,7 +234,7 @@ List<Product^>^ AppController::DBController::QueryAllProducts()
             s->Name = reader["name"]->ToString();
             s->Description = reader["description"]->ToString();
             s->Brand = reader["brand"]->ToString();
-            s->Photo = (array<Byte>^)reader["photo"];
+            //s->Photo = (array<Byte>^)reader["photo"];
             s->Price = Double::Parse(reader["price"]->ToString());
             s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
             s->QuantitySold = Int32::Parse(reader["quantitySold"]->ToString());

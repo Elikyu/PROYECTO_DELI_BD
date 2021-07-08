@@ -625,3 +625,24 @@ AS
 	ORDER BY name
 GO
 
+/*QueryAllProductsByCoincidence*/
+
+IF EXISTS ( SELECT * 
+            FROM   sysobjects 
+            WHERE  id = object_id(N'[dbo].[usp_QueryAllProductsByCoincidence]') 
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+BEGIN
+    DROP PROCEDURE [dbo].[usp_QueryAllProductsByCoincidence]
+END
+GO
+CREATE PROCEDURE dbo.usp_QueryAllProductsByCoincidence(
+	@data VARCHAR(250)
+)
+
+AS
+	SELECT * FROM PRODUCT p
+	WHERE  (p.brand LIKE '%' + @data + '%' OR
+			p.name LIKE '%' + @data + '%' OR
+			p.description LIKE '%' + @data + '%') 	
+	ORDER BY name
+GO
