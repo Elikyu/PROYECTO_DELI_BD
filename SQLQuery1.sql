@@ -244,15 +244,6 @@ CREATE PROCEDURE dbo.usp_AddCustomer(
 	END
 GO
 
-/*DECLARE @new_identity INT
-EXEC dbo.usp_AddCustomer @username='jbaldeon', @password='password', @first_name='JOHAN', @last_name='BALDEON', @gender='M', 
-	@document_number='40582034', @phone_number='987987987', @address='Elm Street 666', @email='jbaldeon@lpoo.com',  @category='Cliente',@customer_points =0, @id=@new_identity OUTPUT 
-EXEC dbo.usp_AddCustomer @username='rtoledo', @password='password', @first_name='RONALD', @last_name='TOLEDO', @gender='M', 
-	@document_number='40582035', @phone_number='987987988', @address='Elm Street 696', @email='rtoledo@lpoo.com',  @category='Cliente',@customer_points =0, @id=@new_identity OUTPUT 
-EXEC dbo.usp_AddCustomer @username='jcuellar', @password='password', @first_name='JULIO', @last_name='CUELLAR', @gender='M', 
-	@document_number='40582036', @phone_number='987987989', @address='Elm Street 996', @email='jcuellar@lpoo.com', @category='Cliente',@customer_points =0, @id=@new_identity OUTPUT 	
-*/
-
 /*AddManager*/
 IF EXISTS ( SELECT * 
             FROM   sysobjects 
@@ -285,13 +276,6 @@ CREATE PROCEDURE dbo.usp_AddManager(
 	END
 GO
 
-
- 
-/*DECLARE @new_identity INT
-EXEC dbo.usp_AddManager @username='pepepollo2', @password='password', @first_name='PEPE', @last_name='POLLO', @gender='M', 
-	@document_number='40182035', @phone_number='987987987', @address='PLAZA SESAMO', @email='triplep2@lpoo.com',  @category='Manager',@employees_number =0, @id=@new_identity OUTPUT 
-*/
-
 IF EXISTS ( SELECT * 
             FROM   sysobjects 
             WHERE  id = object_id(N'[dbo].[usp_AddDeliveryMan]') 
@@ -322,15 +306,6 @@ CREATE PROCEDURE dbo.usp_AddDeliveryMan(
 		SELECT @id, @deliveryManRatingAverage		
 	END
 GO
-
-
-/*DECLARE @new_identity INT
-EXEC dbo.usp_AddDeliveryMan @username='jbaldeon2', @password='password', @first_name='JOHAN', @last_name='BALDEON', @gender='M', 
-	@document_number='40581123', @phone_number='987987987', @address='Elm Street 666', @email='jbaldeon2@lpoo.com',  @category='Repartidor',@deliveryManRatingAverage=0, @id=@new_identity OUTPUT 
-EXEC dbo.usp_AddDeliveryMan @username='rtoledo2', @password='password', @first_name='RONALD', @last_name='TOLEDO', @gender='M', 
-	@document_number='40582040', @phone_number='987987988', @address='Elm Street 696', @email='rtoledo2@lpoo.com',  @category='Repartidor',@deliveryManRatingAverage=0, @id=@new_identity OUTPUT 
-EXEC dbo.usp_AddDeliveryMan @username='jcuellar2', @password='password', @first_name='JULIO', @last_name='CUELLAR', @gender='M', 
-	@document_number='40582456', @phone_number='987987989', @address='Elm Street 996', @email='jcuella2r@lpoo.com', @category='Repartidor',@deliveryManRatingAverage=0, @id=@new_identity OUTPUT */	
 
 IF EXISTS ( SELECT * 
             FROM   sysobjects 
@@ -406,10 +381,6 @@ CREATE PROCEDURE dbo.usp_DeleteProduct(
 	END
 GO
 
-/*DECLARE @new_identity INT
-EXEC dbo.usp_AddGroceries @name = 'Salchipapa', @description='deliciosa', @price=50, @stocktotal=100, @brand='La Doña', @quantitySold=10,@photo=NULL, @id= @new_identity OUTPUT
-GO*/
-
 /*HEALTHCARE*/
 
 IF EXISTS ( SELECT * 
@@ -469,10 +440,6 @@ CREATE PROCEDURE dbo.usp_UpdateHealthCare(
 		WHERE id=@id*/ 
 	END
 GO
-
-/*DECLARE @new_identity INT
-EXEC dbo.usp_AddHealthCare @name = 'Panadol Ant', @description='tabletas x4', @price=50, @stocktotal=100, @brand='Panadol', @quantitySold=10, @photo=NULL, @id= @new_identity OUTPUT
-GO*/
 
 /*QUERY PRODUCTS*/ 
 
@@ -564,10 +531,6 @@ CREATE PROCEDURE dbo.usp_RegisterSale(
 	END
 GO
 
-/*DECLARE @new_identity INT
-EXEC dbo.usp_RegisterSale  @status='A', @date='2020-12-02', @paymentType='Tarjeta', @arrivalTime=10, @deliveryManRating=5, @customerRating=5, @ubication='Direccion5', @total =1200, @customer_id=1, @deliveryMan_id=5, @id=@new_identity OUTPUT 
-GO*/
-
 /*AddSaleDetail*/
 
 IF EXISTS ( SELECT * 
@@ -594,10 +557,6 @@ CREATE PROCEDURE dbo.usp_AddSaleDetail(
 		SET @id = SCOPE_IDENTITY()
 	END
 GO	
-
-/*DECLARE @new_identity INT
-EXEC dbo.usp_AddSaleDetail @order_id=1, @product_id=1, @quantity=1, @unit_price=5, @subtotal =5, @total=5, @id=@new_identity OUTPUT  
-GO*/
 
 /*QueryAllProductsByName*/
 IF EXISTS ( SELECT * 

@@ -229,26 +229,17 @@ List<Product^>^ AppController::DBController::QueryAllProducts()
     List<Product^>^ list = gcnew List<Product^>();
     while (reader->Read()) {
         if (reader["name"] != nullptr) {
-            Groceries^ s = gcnew Groceries();
+            Product^ s = gcnew Product();
             s->Id = Int32::Parse(reader["id"]->ToString());
             s->Name = reader["name"]->ToString();
             s->Description = reader["description"]->ToString();
-            s->Price = Double::Parse(reader["price"]->ToString());
-            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
-            s->QuantitySold = Int32::Parse(reader["quantitySold"]->ToString());
-            list->Add(s);
-        }
-        if (reader["brand"] != nullptr) {
-            HealthCare^ s = gcnew HealthCare();
-            s->Id = Int32::Parse(reader["id"]->ToString());
-            s->Name = reader["name"]->ToString();
-            s->Description = reader["description"]->ToString();
-            s->Price = Double::Parse(reader["price"]->ToString());
-            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
             s->Brand = reader["brand"]->ToString();
+            s->Photo = (array<Byte>^)reader["photo"];
+            s->Price = Double::Parse(reader["price"]->ToString());
+            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
             s->QuantitySold = Int32::Parse(reader["quantitySold"]->ToString());
             list->Add(s);
-        }
+        }        
     }
 
     //IMPORTANTE Paso 4: Cerramos la conexión con la BD
