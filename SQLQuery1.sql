@@ -90,7 +90,7 @@ CREATE TABLE PRODUCT(
 	status CHAR(1) NULL,
 	photo IMAGE NULL,
 	brand VARCHAR(50) NOT NULL,
-	quantitySold INT  NULL,  
+	quantitySold INT NOT NULL,  
 )
 GO
 CREATE TABLE HEALTHCARE_PRODUCT(
@@ -322,15 +322,15 @@ CREATE PROCEDURE dbo.usp_AddGroceries(
 	@name VARCHAR(250),
 	@description VARCHAR(500),
 	@price DECIMAL(10,2),
-	@stockTotal INT,
+	@stocktotal INT,
 	@brand VARCHAR(50),
 	@quantitySold INT,  
 	@photo IMAGE,
 	@id INT OUT
  ) AS 
 	BEGIN
-		INSERT INTO PRODUCT(name, description, price, stockTotal, status, photo, brand, quantitySold)
-		SELECT @name, @description, @price, @stockTotal, 'A', @photo, @brand, @quantitySold
+		INSERT INTO PRODUCT(name, description, price, stocktotal, status, photo, brand, quantitySold)
+		SELECT @name, @description, @price, @stocktotal, 'A', @photo, @brand, @quantitySold
 		SET @id = SCOPE_IDENTITY()	
 	
 		INSERT INTO GROCERY_PRODUCT(id)
@@ -362,8 +362,8 @@ CREATE PROCEDURE dbo.usp_UpdateGroceries(
 		WHERE id = @id	
 	
 		/*UPDATE GROCERY_PRODUCT
-		/*SET author=@author, title=@title, edition=@edition, editorial=@editorial, year=@year*/
-		WHERE id=@id */
+		SET author=@author, title=@title, edition=@edition, editorial=@editorial, year=@year
+		WHERE id=@id*/
 	END
 GO
 IF EXISTS ( SELECT * 
@@ -510,3 +510,135 @@ AS
 	SELECT * FROM PRODUCT p, HEALTHCARE_PRODUCT bp
 	WHERE p.id = @id AND p.id = bp.id
 GO
+
+/*RegisterSale*/
+
+IF EXISTS ( SELECT * 
+            FROM   sysobjects 
+            WHERE  id = object_id(N'[dbo].[usp_RegisterSale]') 
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+BEGIN
+    DROP PROCEDURE [dbo].[usp_RegisterSale]
+END
+GO
+CREATE PROCEDURE dbo.usp_RegisterSale(
+	@status CHAR(1),
+	@date DATE,
+	@paymentType CHAR(8),
+	@arrivalTime INT,
+	@deliveryManRating INT,
+	@customerRating INT,
+	@ubication VARCHAR(25),
+	@total DECIMAL(10,2),
+	@customer_id INT,
+	@deliveryMan_id INT,
+	@id INT OUT
+) AS
+	BEGIN
+		INSERT INTO ORDER_S(status, date, paymentType, arrivalTime, deliveryManRating, customerRating, ubication, total, customer_id, deliveryMan_id)
+		SELECT @status, @date, @paymentType, @arrivalTime, @deliveryManRating, @customerRating, @ubication, @total, @customer_id, @deliveryMan_id
+		
+		SET @id = SCOPE_IDENTITY()
+	END
+GO
+DECLARE @new_identity INT
+EXEC dbo.usp_RegisterSale  @status='A', @date='2020-12-02', @paymentType='Tarjeta', @arrivalTime=10, @deliveryManRating=5, @customerRating=5, @ubication='Direccion5', @total =1200, @customer_id=1, @deliveryMan_id=5, @id=@new_identity OUTPUT 
+GO
+
+/*AddSaleDetail*/
+
+IF EXISTS ( SELECT * 
+            FROM   sysobjects 
+            WHERE  id = object_id(N'[dbo].[usp_AddSaleDetail]') 
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+BEGIN
+    DROP PROCEDURE [dbo].[usp_AddSaleDetail]
+END    
+GO
+CREATE PROCEDURE dbo.usp_AddSaleDetail(
+	@order_id INT,
+	@product_id INT,
+	@quantity INT,
+	@unit_price DECIMAL(10,2),
+	@subtotal DECIMAL(10,2),
+	@total DECIMAL(10,2),
+	@id INT OUT
+) AS
+	BEGIN
+		INSERT INTO SALE_DETAIL(order_id, product_id, quantity, unit_price, subtotal, total)
+		SELECT @order_id, @product_id, @quantity, @unit_price, @subtotal, @total
+		
+		SET @id = SCOPE_IDENTITY()
+	END
+GO	
+DECLARE @new_identity INT
+EXEC dbo.usp_AddSaleDetail @order_id=1, @product_id=1, @quantity=1, @unit_price=5, @subtotal =5, @total=5, @id=@new_identity OUTPUT  
+GO
+
+/*QueryAllProductsByName*/
+IF EXISTS ( SELECT * 
+            FROM   sysobjects 
+            WHERE  id = object_id(N'[dbo].[usp_QueryAllProductsByName]') 
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+BEGIN
+    DROP PROCEDURE [dbo].[usp_QueryAllProductsByName]
+END
+GO
+CREATE PROCEDURE dbo.usp_QueryAllProductsByName(
+	@product_name VARCHAR(250)
+)
+AS
+	SELECT * 
+	FROM PRODUCT P
+	FULL OUTER JOIN GROCERY_PRODUCT B ON B.id = P.id
+	FULL OUTER JOIN HEALTHCARE_PRODUCT E ON E.id = P.id
+	WHERE P.name LIKE '%' + @product_name + '%'
+	ORDER BY name
+GO
+
+/*QueryAllGroceriesByCoincidence*/
+IF EXISTS ( SELECT * 
+            FROM   sysobjects 
+            WHERE  id = object_id(N'[dbo].[usp_QueryAllGroceriesByCoincidence]') 
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+BEGIN
+    DROP PROCEDURE [dbo].[usp_QueryAllGroceriesByCoincidence]
+END
+GO
+CREATE PROCEDURE dbo.usp_QueryAllGroceriesByCoincidence(
+	@data VARCHAR(250)
+)
+AS
+	SELECT 
+		* 
+	FROM 
+		GROCERY_PRODUCT bp, PRODUCT p
+	WHERE	
+		   (p.name LIKE '%' + @data + '%' OR
+			p.brand LIKE '%' + @data + '%' OR
+			p.description LIKE '%' + @data + '%') AND
+			bp.id = p.id
+	ORDER BY name
+GO	
+
+/*QueryAllHealthCareByCoincidence*/
+IF EXISTS ( SELECT * 
+            FROM   sysobjects 
+            WHERE  id = object_id(N'[dbo].[usp_QueryAllHealthCareByCoincidence]') 
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+BEGIN
+    DROP PROCEDURE [dbo].[usp_QueryAllHealthCareByCoincidence]
+END
+GO
+CREATE PROCEDURE dbo.usp_QueryAllHealthCareByCoincidence(
+	@data VARCHAR(250)
+)
+AS
+	SELECT * FROM HEALTHCARE_PRODUCT ep, PRODUCT p
+	WHERE  (p.brand LIKE '%' + @data + '%' OR
+			p.name LIKE '%' + @data + '%' OR
+			p.description LIKE '%' + @data + '%') AND
+			ep.id = p.id			
+	ORDER BY name
+GO
+

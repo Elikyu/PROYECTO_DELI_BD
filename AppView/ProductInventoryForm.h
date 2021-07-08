@@ -79,11 +79,11 @@ namespace AppView {
 	private: System::Windows::Forms::DataGridView^ dgvGroceries;
 
 
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Id;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ NameGroceries;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Brand;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Price;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stock;
+
+
+
+
+
 	private: System::Windows::Forms::TextBox^ txtStock;
 	private: System::Windows::Forms::Button^ btnUploadPhotohealthcare;
 	private: System::Windows::Forms::Button^ btnDeletehealthcare;
@@ -120,11 +120,21 @@ namespace AppView {
 	private: System::Windows::Forms::Label^ label11;
 	private: System::Windows::Forms::Label^ label12;
 	private: System::Windows::Forms::PictureBox^ pbPhotohealthcare;
+private: System::Windows::Forms::DataGridViewTextBoxColumn^ Id;
+private: System::Windows::Forms::DataGridViewTextBoxColumn^ NameGroceries;
+private: System::Windows::Forms::DataGridViewTextBoxColumn^ Brand;
+private: System::Windows::Forms::DataGridViewTextBoxColumn^ Price;
+private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stock;
 private: System::Windows::Forms::DataGridViewTextBoxColumn^ Idhealthcare;
 private: System::Windows::Forms::DataGridViewTextBoxColumn^ Namehealthcare;
 private: System::Windows::Forms::DataGridViewTextBoxColumn^ Brandhealthcare;
 private: System::Windows::Forms::DataGridViewTextBoxColumn^ Pricehealthcare;
 private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
+
+
+
+
+
 
 	private: System::ComponentModel::IContainer^ components;
 
@@ -150,11 +160,6 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 			this->btnUpdate = (gcnew System::Windows::Forms::Button());
 			this->btnAdd = (gcnew System::Windows::Forms::Button());
 			this->dgvGroceries = (gcnew System::Windows::Forms::DataGridView());
-			this->Id = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->NameGroceries = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Brand = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Price = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Stock = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->txtStock = (gcnew System::Windows::Forms::TextBox());
 			this->txtPrice = (gcnew System::Windows::Forms::TextBox());
 			this->txtDescription = (gcnew System::Windows::Forms::TextBox());
@@ -174,11 +179,6 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 			this->btnUpdatehealthcare = (gcnew System::Windows::Forms::Button());
 			this->btnAddhealthcare = (gcnew System::Windows::Forms::Button());
 			this->dgvHealthCare = (gcnew System::Windows::Forms::DataGridView());
-			this->Idhealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Namehealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Brandhealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Pricehealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Stockhealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->txtStockhealthcare = (gcnew System::Windows::Forms::TextBox());
 			this->txtPricehealthcare = (gcnew System::Windows::Forms::TextBox());
 			this->txtDescriptionhealthcare = (gcnew System::Windows::Forms::TextBox());
@@ -192,6 +192,16 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 			this->label11 = (gcnew System::Windows::Forms::Label());
 			this->label12 = (gcnew System::Windows::Forms::Label());
 			this->pbPhotohealthcare = (gcnew System::Windows::Forms::PictureBox());
+			this->Id = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->NameGroceries = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Brand = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Price = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Stock = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Idhealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Namehealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Brandhealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Pricehealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Stockhealthcare = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabControl1->SuspendLayout();
 			this->tabPageGroceries->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgvGroceries))->BeginInit();
@@ -297,33 +307,6 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 			this->dgvGroceries->Size = System::Drawing::Size(481, 144);
 			this->dgvGroceries->TabIndex = 13;
 			this->dgvGroceries->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &ProductInventoryForm::dgvGroceries_CellClick);
-			// 
-			// Id
-			// 
-			this->Id->HeaderText = L"Código";
-			this->Id->Name = L"Id";
-			this->Id->Width = 50;
-			// 
-			// NameGroceries
-			// 
-			this->NameGroceries->HeaderText = L"Nombre";
-			this->NameGroceries->Name = L"NameGroceries";
-			this->NameGroceries->Width = 150;
-			// 
-			// Brand
-			// 
-			this->Brand->HeaderText = L"Marca";
-			this->Brand->Name = L"Brand";
-			// 
-			// Price
-			// 
-			this->Price->HeaderText = L"Precio";
-			this->Price->Name = L"Price";
-			// 
-			// Stock
-			// 
-			this->Stock->HeaderText = L"Stock";
-			this->Stock->Name = L"Stock";
 			// 
 			// txtStock
 			// 
@@ -513,33 +496,6 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 			this->dgvHealthCare->TabIndex = 31;
 			this->dgvHealthCare->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &ProductInventoryForm::dgvHealthCare_CellClick);
 			// 
-			// Idhealthcare
-			// 
-			this->Idhealthcare->HeaderText = L"Código";
-			this->Idhealthcare->Name = L"Idhealthcare";
-			this->Idhealthcare->Width = 50;
-			// 
-			// Namehealthcare
-			// 
-			this->Namehealthcare->HeaderText = L"Nombre";
-			this->Namehealthcare->Name = L"Namehealthcare";
-			this->Namehealthcare->Width = 150;
-			// 
-			// Brandhealthcare
-			// 
-			this->Brandhealthcare->HeaderText = L"Marca";
-			this->Brandhealthcare->Name = L"Brandhealthcare";
-			// 
-			// Pricehealthcare
-			// 
-			this->Pricehealthcare->HeaderText = L"Precio";
-			this->Pricehealthcare->Name = L"Pricehealthcare";
-			// 
-			// Stockhealthcare
-			// 
-			this->Stockhealthcare->HeaderText = L"Stock";
-			this->Stockhealthcare->Name = L"Stockhealthcare";
-			// 
 			// txtStockhealthcare
 			// 
 			this->txtStockhealthcare->Location = System::Drawing::Point(262, 133);
@@ -646,6 +602,62 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 			this->pbPhotohealthcare->SizeMode = System::Windows::Forms::PictureBoxSizeMode::StretchImage;
 			this->pbPhotohealthcare->TabIndex = 18;
 			this->pbPhotohealthcare->TabStop = false;
+			// 
+			// Id
+			// 
+			this->Id->HeaderText = L"Código";
+			this->Id->Name = L"Id";
+			this->Id->Width = 50;
+			// 
+			// NameGroceries
+			// 
+			this->NameGroceries->HeaderText = L"Nombre";
+			this->NameGroceries->Name = L"NameGroceries";
+			this->NameGroceries->Width = 150;
+			// 
+			// Brand
+			// 
+			this->Brand->HeaderText = L"Marca";
+			this->Brand->Name = L"Brand";
+			// 
+			// Price
+			// 
+			this->Price->HeaderText = L"Precio";
+			this->Price->Name = L"Price";
+			this->Price->Width = 70;
+			// 
+			// Stock
+			// 
+			this->Stock->HeaderText = L"Stock";
+			this->Stock->Name = L"Stock";
+			// 
+			// Idhealthcare
+			// 
+			this->Idhealthcare->HeaderText = L"Código";
+			this->Idhealthcare->Name = L"Idhealthcare";
+			this->Idhealthcare->Width = 50;
+			// 
+			// Namehealthcare
+			// 
+			this->Namehealthcare->HeaderText = L"Nombre";
+			this->Namehealthcare->Name = L"Namehealthcare";
+			this->Namehealthcare->Width = 150;
+			// 
+			// Brandhealthcare
+			// 
+			this->Brandhealthcare->HeaderText = L"Marca";
+			this->Brandhealthcare->Name = L"Brandhealthcare";
+			// 
+			// Pricehealthcare
+			// 
+			this->Pricehealthcare->HeaderText = L"Precio";
+			this->Pricehealthcare->Name = L"Pricehealthcare";
+			this->Pricehealthcare->Width = 70;
+			// 
+			// Stockhealthcare
+			// 
+			this->Stockhealthcare->HeaderText = L"Stock";
+			this->Stockhealthcare->Name = L"Stockhealthcare";
 			// 
 			// ProductInventoryForm
 			// 
