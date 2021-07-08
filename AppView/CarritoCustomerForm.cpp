@@ -49,9 +49,14 @@ System::Void AppView::CarritoCustomerForm::btnRegisterSale_Click(System::Object^
 		Order^ sale = gcnew Order();
 		int customerId = UserManager::ReturnIDbyUserName(textUserNameCS->Text);
 		sale->Customer = UserManager::QueryCustomerbyId(customerId);
+
 		DateTime dt = dtpSaleDate->Value;
 		sale->Date = dt.Now + "" ; // ToString();
 		sale->Total = Double::Parse(txtTotalSale->Text);
+		DeliveryMan^ dm = gcnew DeliveryMan();
+		sale->DeliveryMan = UserManager::QueryDeliveryManbyId(5);
+		sale->Ubication = txtSAddres->Text;
+	
 		//g
 		char pt;
 		//String^ Tarjeta = ((ComboBoxItem2^)cmbTypePayment->SelectedItem)->Name->ToString();

@@ -838,21 +838,114 @@ List<Order^>^ AppController::DBController::QueryAllSalesByCustomer(String^ usern
 
 int AppController::DBController::QueryLastSaleId()
 {
+    /*
     if (saleDB->ListDB->Count > 0)
         return saleDB->ListDB[saleDB->ListDB->Count - 1]->Id;
     else
         return 0;
+        */
+
+    int id;
+    //userDB->LoadUsers();
+    //for (int i = 0; i < userDB->ListDB->Count; i++)
+      //  if (userDB->ListDB[i]->Username->Equals(username))
+        //    return userDB->ListDB[i]->Id;
+
+
+    /* Paso 1: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /* Paso 2: Se prepara la sentencia */
+    SqlCommand^ comm = gcnew SqlCommand();
+    comm->Connection = conn;
+    comm->CommandText = "SELECT TOP 1 id FROM ORDER_S order by id desc";
+
+    /* Paso 3: Se ejecuta la sentencia */
+    SqlDataReader^ dr = comm->ExecuteReader();
+
+    /* Paso 4: Se procesan los resultados */
+    if (dr->Read()) {
+        id = (int)dr["id"];
+    }
+
+    /* Paso 5: Se cierra los objetos de conexión!!!!!!!!!! */
+    if (dr != nullptr) dr->Close();
+    if (conn != nullptr) conn->Close();
+    return id;
 }
 
 Order^ AppController::DBController::QueryOrderbyId(int saleId)
 {
-    saleDB->LoadFromBinaryFile();
-    for (int i = 0; i < saleDB->ListDB->Count; i++) {
-        if (saleDB->ListDB[i]->Id == saleId) {
-            return saleDB->ListDB[i];
-        }
+    /* 1er paso: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /* 2do paso: Se prepara la sentencia */
+    SqlCommand^ comm;
+
+    comm = gcnew SqlCommand("usp_QueryOrderById", conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+   // comm->Parameters->Add("@order_id", System::Data::SqlDbType::Int);
+    comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
+    comm->Prepare();
+    comm->Parameters["@id"]->Value = saleId;
+
+    /* 3er paso: Se ejecuta la sentencia */
+    SqlDataReader^ reader = comm->ExecuteReader();
+
+    /* 4to paso: Se procesan los resultados */
+    Order^ s;
+
+    if (reader->Read()) {
+        s = gcnew Order();
+        s->Id = Int32::Parse(reader["id"]->ToString());
+        s->Status = safe_cast<String^> (reader["status"])[0];
+        s->Date = reader["date"]->ToString();
+        s->PaymentType = safe_cast<String^> (reader["paymentType"])[0];
+        s->ArrivalTime = Int32::Parse(reader["arrivalTime"]->ToString());
+        s->DeliveryManRating = Int32::Parse(reader["deliveryManRating"]->ToString());
+        s->CustomerRating = Int32::Parse(reader["customerRating"]->ToString());
+        s->Ubication = reader["ubication"]->ToString();
+        s->Total = Double::Parse(reader["total"]->ToString());
+
+        /*int i=0;
+        while (reader["order_id"]) {
+            s->Details[i]->Product->Id =(int)comm->Parameters["product_id"]->Value;
+            s->Details[i]->Quantity = (int)comm->Parameters["quantity"]->Value;
+            s->Details[i]->UnitPrice = (int)comm->Parameters["unit_price"]->Value;
+            s->Details[i]->SubTotal = (int)comm->Parameters["product_id"]->Value;
+            s->Details[i]->Total = (int)comm->Parameters["total"]->Value;
+            i++;
+        }*/
     }
-    return nullptr;
+
+
+    /* IMPORTANTE 5to paso: Cerramos la conexión con la BD */
+    if (conn != nullptr) conn->Close();
+
+    SqlConnection^ conn2 = GetConnection();
+
+    SqlCommand^ comm2 = gcnew SqlCommand();
+    comm2->Connection = conn2;
+    comm2->CommandText = "SELECT * FROM sale_detail  WHERE order_id="+ saleId;
+    SqlDataReader^ dr = comm2->ExecuteReader();
+    int i = 0;
+    while (dr->Read()) {
+        //s->Details[i]->Product->Id = (int)dr["product_id"];
+        int a= Int32::Parse(dr["quantity"]->ToString());
+        int b  = (int)dr["unit_price"];
+        int c = (int)dr["product_id"];
+        int d = (int)dr["total"];
+        i++;
+
+    }
+
+    
+
+    /* Paso 3: Se ejecuta la sentencia */
+    if (conn != nullptr) conn->Close();
+
+    return s;
+
 }
 
 void AppController::DBController::UpdateOrder(Order^ order)
@@ -1221,12 +1314,14 @@ Customer^ AppController::DBController::QueryCustomerById(int customerId)
 
     /* 4to paso: Se procesan los resultados */
     Customer^ c;
+   
     if (reader->Read()) {
+         
         c = gcnew Customer();
-        c->Id = Int32::Parse(reader["id"]->ToString());
-        c->Username = reader["username"]->ToString();
-        c->FirstName = reader["first_name"]->ToString();
-        c->LastName = reader["last_name"]->ToString();
+        c->Id = (int)reader["id"];
+        c->Username = safe_cast<String^> ( reader["username"]);
+        c->FirstName = safe_cast<String^> ( reader["first_name"]);
+        c->LastName = safe_cast<String^>( reader["last_name"]);
         c->Gender = reader["gender"]->ToString()[0];
         c->Email = safe_cast<String^> (reader["email"]);
         c->DocumentNumber = safe_cast<String^> (reader["document_number"]);
