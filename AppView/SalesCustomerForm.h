@@ -229,14 +229,14 @@ namespace AppView {
 		   public:
 			   void RefreshDGVSales() {
 				   int customerId = UserManager::ReturnIDbyUserName(txtUser->Text);
-				   User^ user = UserManager::QueryUserbyId(customerId);
+				   Customer^ user = UserManager::QueryCustomerbyId(customerId);
 				   List<Order^>^ listOrder = AppManager::QueryAllSales();
 				   String^ mode;
 				   String^ deliveryman;
 
 				   dgvSales->Rows->Clear();
 				   for (int i = 0; i < listOrder->Count; i++) {
-					   if (listOrder[i]->User->Username->CompareTo(user->Username) == 0) {
+					   if (listOrder[i]->Customer->Username->CompareTo(user->Username) == 0) {
 					  if (listOrder[i]->Status == 'W') {
 							 mode = "EN ESPERA";
 							 deliveryman = "NO HAY AUN";

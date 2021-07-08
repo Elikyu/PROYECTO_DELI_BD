@@ -48,7 +48,7 @@ System::Void AppView::CarritoCustomerForm::btnRegisterSale_Click(System::Object^
 		//aForm->ShowDialog();
 		Order^ sale = gcnew Order();
 		int customerId = UserManager::ReturnIDbyUserName(textUserNameCS->Text);
-		sale->User = UserManager::QueryCustomerbyId(customerId);
+		sale->Customer = UserManager::QueryCustomerbyId(customerId);
 		DateTime dt = dtpSaleDate->Value;
 		sale->Date = dt.Now + "" ; // ToString();
 		sale->Total = Double::Parse(txtTotalSale->Text);

@@ -770,7 +770,7 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 	   ///REGISTRAAAAAAAAAAAAAAARSEE
 	private: System::Void btnRegister_Click(System::Object^ sender, System::EventArgs^ e) {
 
-		User^ u = gcnew User();
+		//User^ u = gcnew User();
 		Customer^ c = gcnew Customer();
 		DeliveryMan^ dm = gcnew DeliveryMan();
 		Manager^ m = gcnew Manager();
@@ -825,6 +825,7 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 				return;
 			}
 
+			/*
 			u->Username = txtUserchck->Text;
 			u->FirstName = txtFirstNamechck->Text;
 			u->LastName = txtLastNamechck->Text;
@@ -835,8 +836,8 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 			u->Password = txtPasswordchck->Text;
 			u->Gender = Char::Parse(txtGenderchk->Text);
 			u->Category = txtCategorychck->Text;
-
-
+			*/
+			//UserManager::AddUser(u);
 			if (category->CompareTo("Cliente") == 0) {
 				c->Username = txtUserchck->Text;
 				c->FirstName = txtFirstNamechck->Text;

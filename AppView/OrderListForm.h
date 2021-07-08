@@ -256,7 +256,7 @@ namespace AppView {
 				   
 					   dgvOrder->Rows->Add(gcnew array<String^> {
 						   "" + listOrder[i]->Id,
-						   "" + listOrder[i]->User->FirstName + " " + listOrder[i]->User->LastName,
+						   "" + listOrder[i]->Customer->FirstName + " " + listOrder[i]->Customer->LastName,
 							   "Ubicacion",
 						   "" + mode
 							

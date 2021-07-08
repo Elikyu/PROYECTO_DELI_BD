@@ -272,7 +272,7 @@ namespace AppView {
 		   void Refreshpage() {
 			   int idsale = Int32::Parse(txtIdSale->Text);
 			   Order^ order = AppManager::QueryOrderbyId(idsale);
-			   txtCustomerName->Text = order->User->FirstName + " " + order->User->LastName;
+			   txtCustomerName->Text = order->Customer->FirstName + " " + order->Customer->LastName;
 
 		   }
 private: System::Void txtCustomerRating_TextChanged(System::Object^ sender, System::EventArgs^ e) {

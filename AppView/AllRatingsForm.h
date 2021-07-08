@@ -220,7 +220,7 @@ namespace AppView {
 
 				   dgvCustomerRating->Rows->Clear();
 				   for (int i = 0; i < orderList->Count; i++) {
-					   customerFullName = orderList[i]->User->FirstName + " " + orderList[i]->User->LastName;
+					   customerFullName = orderList[i]->Customer->FirstName + " " + orderList[i]->Customer->LastName;
 					   dgvCustomerRating->Rows->Add(gcnew array<String^> {
 						   "" + orderList[i]->Id,
 							   customerFullName,

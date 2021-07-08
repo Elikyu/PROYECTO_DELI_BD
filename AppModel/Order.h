@@ -25,7 +25,7 @@ namespace AppModel {
         property String^ Ubication;
         property DeliveryMan^ DeliveryMan;
         property Customer^ Customer;
-        property User^ User;
+        //property User^ User;
         property double Total;
         property List<SaleDetail^>^ Details;
     };

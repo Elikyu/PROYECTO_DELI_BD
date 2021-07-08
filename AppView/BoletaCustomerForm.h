@@ -292,8 +292,8 @@ namespace AppView {
 		   void RefreshForm() {
 			   int idsale = Int32::Parse(txtIdSale->Text);
 			   Order^ order = AppManager::QueryOrderbyId(idsale);
-			   txtUser->Text = order->User->FirstName + " " + order->User->LastName;
-			   txtDocumentNumber->Text = order->User->DocumentNumber;
+			   txtUser->Text = order->Customer->FirstName + " " + order->Customer->LastName;
+			   txtDocumentNumber->Text = order->Customer->DocumentNumber;
 			   textDateTimeB->Text = order->Date;
 			   txtTotal->Text =  "" + order->Total;
 			   txtPaymentType->Text = "Tarjeta";

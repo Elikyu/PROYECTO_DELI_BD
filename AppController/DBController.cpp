@@ -8,19 +8,38 @@ using namespace System::Xml::Serialization;
 
 void AppController::DBController::Init()
 {
-    System::Xml::Serialization::XmlSerializer^ reader =        gcnew System::Xml::Serialization::XmlSerializer(ConnectionParam::typeid);    System::IO::StreamReader^ file = nullptr;    try {        file = gcnew System::IO::StreamReader("init.xml");        connParam = (ConnectionParam^)reader->Deserialize(file);    }    catch (...) {        return;    }    finally {        if (file != nullptr) file->Close();    }
+    System::Xml::Serialization::XmlSerializer^ reader =
+        gcnew System::Xml::Serialization::XmlSerializer(ConnectionParam::typeid);
+    System::IO::StreamReader^ file = nullptr;
+    try {
+        file = gcnew System::IO::StreamReader("init.xml");
+        connParam = (ConnectionParam^)reader->Deserialize(file);
+    }
+    catch (...) {
+
+        return;
+    }
+    finally {
+        if (file != nullptr) file->Close();
+    }
 }
 
 SqlConnection^ AppController::DBController::GetConnection()
 {
-    SqlConnection^ conn = gcnew SqlConnection();    String^ connStr = "Server=" + connParam->Server + ";Database=" + connParam->Database +        ";User ID=" + connParam->User + ";Password=" + connParam->Password;    conn->ConnectionString = connStr;    conn->Open();    return conn;
+    SqlConnection^ conn = gcnew SqlConnection();
+    String^ connStr = "Server=" + connParam->Server + ";Database=" + connParam->Database +
+        ";User ID=" + connParam->User + ";Password=" + connParam->Password;
+    conn->ConnectionString = connStr;
+    conn->Open();
+    return conn;
 }
 
 /*Producto*/
 void AppController::DBController::AddProduct(Product^ product) {
 
     SqlConnection^ conn = GetConnection();
-    String^ strCmd;
+
+    String^ strCmd;
     if (product->GetType() == Groceries::typeid) {
         strCmd = "dbo.usp_AddGroceries";
         SqlCommand^ comm = gcnew SqlCommand(strCmd,conn);
@@ -34,7 +53,8 @@ void AppController::DBController::AddProduct(Product^ product) {
         comm->Parameters->Add("@photo", System::Data::SqlDbType::Image);
         comm->Parameters->Add("@brand", System::Data::SqlDbType::VarChar, 250);
         comm->Parameters->Add("@quantitySold", System::Data::SqlDbType::VarChar, 250);
-        SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
+
+        SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
         outputIdParam->Direction = System::Data::ParameterDirection::Output;
         comm->Parameters->Add(outputIdParam);
         comm->Prepare();
@@ -586,7 +606,32 @@ List<HealthCare^>^ AppController::DBController::QueryAllHealthCareByCoincidence(
 
 List<Product^>^ AppController::DBController::QueryProductByName(String^ name)
 {
-    SqlConnection^ conn = GetConnection();    SqlCommand^ comm;    comm = gcnew SqlCommand("usp_QueryAllProductsByCoincidence", conn);    comm->CommandType = System::Data::CommandType::StoredProcedure;    comm->Parameters->Add("@data", System::Data::SqlDbType::VarChar, 250);    comm->Prepare();    comm->Parameters["@data"]->Value = name;    SqlDataReader^ reader = comm->ExecuteReader();    List<Product^>^ list = gcnew List<Product^>();    while (reader->Read()) {        if (reader["status"] == 'A') {            Product^ s = gcnew Product();            s->Id = Int32::Parse(reader["id"]->ToString());            s->Name = reader["name"]->ToString();            s->Description = reader["description"]->ToString();            s->Price = Double::Parse(reader["price"]->ToString());            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());            s->Brand = reader["brand"]->ToString();            s->QuantitySold = Int32::Parse(reader["quantitySold"]->ToString());            list->Add(s);        }    }    if (conn != nullptr) conn->Close();    return list;
+    SqlConnection^ conn = GetConnection();
+    SqlCommand^ comm;
+    comm = gcnew SqlCommand("usp_QueryAllProductsByCoincidence", conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@data", System::Data::SqlDbType::VarChar, 250);
+    comm->Prepare();
+    comm->Parameters["@data"]->Value = name;
+    SqlDataReader^ reader = comm->ExecuteReader();
+    List<Product^>^ list = gcnew List<Product^>();
+
+    while (reader->Read()) {
+        if (reader["status"] == 'A') {
+            Product^ s = gcnew Product();
+            s->Id = Int32::Parse(reader["id"]->ToString());
+            s->Name = reader["name"]->ToString();
+            s->Description = reader["description"]->ToString();
+            s->Price = Double::Parse(reader["price"]->ToString());
+            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
+            s->Brand = reader["brand"]->ToString();
+            s->QuantitySold = Int32::Parse(reader["quantitySold"]->ToString());
+
+            list->Add(s);
+        }
+    }
+    if (conn != nullptr) conn->Close();
+    return list;
 
 }
 
@@ -722,7 +767,7 @@ void AppController::DBController::RegisterSale(Order^ sale)
         comm->Parameters["@ubication"]->Value = sale->Ubication;
         comm->Parameters["@total"]->Value = sale->Total;
         comm->Parameters["@customer_id"]->Value = sale->Customer->Id;
-        comm->Parameters["@salesman_id"]->Value = sale->DeliveryMan->Id;
+        comm->Parameters["@deliveryMan_id"]->Value = sale->DeliveryMan->Id;
 
         /* 4to paso: Se ejecuta la sentencia */
         comm->ExecuteNonQuery();
@@ -781,7 +826,7 @@ List<Order^>^ AppController::DBController::QueryAllSalesByCustomer(String^ usern
     saleDB->LoadFromBinaryFile();
 
     for (int i = 0; i < saleDB->ListDB->Count; i++) {
-        if (saleDB->ListDB[i]->User->Username->CompareTo(username) == 0) {
+        if (saleDB->ListDB[i]->Customer->Username->CompareTo(username) == 0) {
             list->Add((saleDB->ListDB[i]));
 
         }
@@ -789,7 +834,8 @@ List<Order^>^ AppController::DBController::QueryAllSalesByCustomer(String^ usern
     }
 
 }
-
+
+
 int AppController::DBController::QueryLastSaleId()
 {
     if (saleDB->ListDB->Count > 0)
@@ -971,7 +1017,6 @@ User^ AppController::DBController::ValidateUser(String^ username, String^ passwo
     /* Paso 4: Se procesan los resultados */
     if (dr->Read()) {
         user = gcnew User();
-        user->Id = (int)dr["id"];
         user->Username = (String^)dr["username"];
         user->FirstName = safe_cast<String^>(dr["first_name"]);
         user->LastName = safe_cast<String^>(dr["last_name"]);

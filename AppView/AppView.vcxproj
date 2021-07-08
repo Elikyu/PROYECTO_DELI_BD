@@ -165,7 +165,9 @@
     <ClInclude Include="AccesoUbicacionDestino.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="AccesoUbiDes.h" />
+    <ClInclude Include="AccesoUbiDes.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="AllRatingsForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>

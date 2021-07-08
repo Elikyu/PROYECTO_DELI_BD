@@ -26,7 +26,7 @@ System::Void AppView::AccesoUbicacionDestino::txtNumberContact_TextChanged(Syste
 {
     CarritoCustomerForm^ customer = gcnew CarritoCustomerForm();
     int customerId = UserManager::ReturnIDbyUserName(customer->textUserNameCS->Text);
-    User^ u = UserManager::QueryUserbyId(customerId);
+    Customer^ u = UserManager::QueryCustomerbyId(customerId);
     txtNumberContact->Text = u->PhoneNumber;
     
 }
