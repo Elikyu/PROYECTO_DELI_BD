@@ -70,48 +70,6 @@ namespace AppView {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Price;
 	private: System::Windows::Forms::DataGridViewImageColumn^ addCarrito;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	protected:
 
 
@@ -411,21 +369,24 @@ namespace AppView {
 				
 			}
 			else {
-				Product^ product = AppManager::QueryProductByName(txtName->Text);
-				if (product == nullptr) { MessageBox::Show("No se encuentra este producto"); }
+				List<Product^>^ productList = AppManager::QueryProductByName(txtName->Text);
+				if (productList == nullptr) { MessageBox::Show("No se encuentra este producto"); }
 				else {
-				dgvProducts->Rows->Clear();
-				dgvProducts->Rows->Add(gcnew array<String^> {
-					"" + product->Id,
-						product->Name,
-						product->Brand,
-					"" + product->Price
+					dgvProducts->Rows->Clear();
 
-				});
+					for (int i = 0; i < productList->Count; i++) {
+						dgvProducts->Rows->Add(gcnew array<String^> {
+							"" + productList[i]->Id,
+								productList[i]->Name,
+								"" + productList[i]->Brand,
+								"" + productList[i]->Price
+
+						});
+					}
 				}
 			}
 			
-			}
+		}
 			
 		
 

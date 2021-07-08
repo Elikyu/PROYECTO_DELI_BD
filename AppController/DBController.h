@@ -92,7 +92,8 @@ namespace AppController {
 		static Product^ QueryProductById(int productId); //DEVOLDERÁ UN PRODUCTO COMPLETO
 		static Groceries^ QueryGroceriesById(int productId);
 		static HealthCare^ QueryHealthCareById(int productId);
-		static Product^ QueryProductByName(String^);
+		static List<Product^>^ QueryProductByName(String^);
+
 	
 		/*Category*/
 		static List<Groceries^>^ QueryAllGroceriesByCoincidence(String^);

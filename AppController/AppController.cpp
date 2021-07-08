@@ -85,7 +85,7 @@ List<Product^>^ AppController::AppManager::QueryProductsByName(String^ name)
 	return productList;
 }
 
-Product^ AppController::AppManager::QueryProductByName(String^ name)
+List<Product^>^ AppController::AppManager::QueryProductByName(String^ name)
 {
 	return DBController::QueryProductByName(name);
 }
