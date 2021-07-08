@@ -343,9 +343,33 @@ List<HealthCare^>^ AppController::DBController::QueryAllHealthCare()
 
 int AppController::DBController::ReturnIDbyProductName(String^ name)
 {
-    for (int i = 0; i < productDB->ListDB->Count; i++)
+    /*for (int i = 0; i < productDB->ListDB->Count; i++)
         if (productDB->ListDB[i]->Name == name)
-            return productDB->ListDB[i]->Id;
+            return productDB->ListDB[i]->Id;*/
+
+    int id;
+
+    /* Paso 1: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /* Paso 2: Se prepara la sentencia */
+    SqlCommand^ comm = gcnew SqlCommand();
+    comm->Connection = conn;
+    comm->CommandText = "SELECT id FROM PRODUCT WHERE name='" + name + "'";
+
+    /* Paso 3: Se ejecuta la sentencia */
+    SqlDataReader^ dr = comm->ExecuteReader();
+
+    /* Paso 4: Se procesan los resultados */
+    if (dr->Read()) {
+        id = (int)dr["id"];
+    }
+
+    /* Paso 5: Se cierra los objetos de conexión!!!!!!!!!! */
+    if (dr != nullptr) dr->Close();
+    if (conn != nullptr) conn->Close();
+    return id;
+
 }
 
 Product^ AppController::DBController::QueryProductById(int productId)
@@ -861,8 +885,8 @@ void AppController::DBController::UpdateStatusOrder(Order^ order)
 void AppController::DBController::AddUser(User^ user)
 {
     /*
-    userDB->ListDB->Add(user);
-    userDB->SaveUsers();
+ userDB->ListDB->Add(user);
+ userDB->SaveUsers();
 */
 // Paso 1: Se obtiene la conexión
     SqlConnection^ conn = GetConnection();
@@ -883,6 +907,7 @@ void AppController::DBController::AddUser(User^ user)
     comm->Parameters->Add("@vaddress", System::Data::SqlDbType::VarChar, 150);
     comm->Parameters->Add("@vemail", System::Data::SqlDbType::VarChar, 150);
     comm->Parameters->Add("@vcategory", System::Data::SqlDbType::VarChar, 15);
+    //comm->Parameters->Add("@iid", System::Data::SqlDbType::Int);
 
     SqlParameter^ outputIdParam = gcnew SqlParameter("@iid", System::Data::SqlDbType::Int);
     outputIdParam->Direction = System::Data::ParameterDirection::Output;
@@ -899,16 +924,17 @@ void AppController::DBController::AddUser(User^ user)
     comm->Parameters["@vaddress"]->Value = user->Address;
     comm->Parameters["@vemail"]->Value = user->Email;
     comm->Parameters["@vcategory"]->Value = user->Category;
+    comm->Parameters["@iid"]->Value = user->Id;;
 
 
     //Paso 3: Se ejecuta la sentencia
     comm->ExecuteNonQuery();
 
     //Paso 4: Si se quiere procesar la salida.
-    int output_id = Convert::ToInt32(comm->Parameters["@id"]->Value);
+    int output_id = Convert::ToInt32(comm->Parameters["@iid"]->Value);
 
     //Paso 5: Se cierra la conexión
-    if (conn!= nullptr) conn->Close();
+    if (conn != nullptr) conn->Close();
 
 }
 
@@ -975,20 +1001,79 @@ User^ AppController::DBController::ValidateUser(String^ username, String^ passwo
 
 User^ AppController::DBController::QueryUserbyId(int userId)
 {
+    /*
     userDB->LoadUsers();
     for (int i = 0; i < userDB->ListDB->Count; i++)
         if (userDB->ListDB[i]->Id == userId &&
             userDB->ListDB[i]->GetType() == User::typeid)
             return (User^)userDB->ListDB[i];
     return nullptr;
+    */
+
+    /* 1er paso: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /* 2do paso: Se prepara la sentencia */
+    SqlCommand^ comm;
+
+    comm = gcnew SqlCommand("usp_QueryUserById", conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
+    comm->Prepare();
+    comm->Parameters["@id"]->Value = userId;
+
+    /* 3er paso: Se ejecuta la sentencia */
+    SqlDataReader^ reader = comm->ExecuteReader();
+
+    /* 4to paso: Se procesan los resultados */
+    User^ s;
+    if (reader->Read()) {
+        s = gcnew User();
+        s->Id = Int32::Parse(reader["id"]->ToString());
+        s->Username = reader["username"]->ToString();
+        s->FirstName = reader["first_name"]->ToString();
+        s->LastName = reader["last_name"]->ToString();
+        s->Gender = reader["gender"]->ToString()[0];
+        s->Email = safe_cast<String^> (reader["email"]);
+        s->DocumentNumber = safe_cast<String^> (reader["document_number"]);
+        s->Address = safe_cast<String^> (reader["address"]);
+        s->PhoneNumber = safe_cast<String^> (reader["phone_number"]);
+    }
+
+    /* IMPORTANTE 5to paso: Cerramos la conexión con la BD */
+    if (conn != nullptr) conn->Close();
+    return s;
 }
 
 int AppController::DBController::ReturnIDbyUserName(String^ username)
 {
-    userDB->LoadUsers();
-    for (int i = 0; i < userDB->ListDB->Count; i++)
-        if (userDB->ListDB[i]->Username->Equals(username))
-            return userDB->ListDB[i]->Id;
+    int id;
+    //userDB->LoadUsers();
+    //for (int i = 0; i < userDB->ListDB->Count; i++)
+      //  if (userDB->ListDB[i]->Username->Equals(username))
+        //    return userDB->ListDB[i]->Id;
+
+
+    /* Paso 1: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /* Paso 2: Se prepara la sentencia */
+    SqlCommand^ comm = gcnew SqlCommand();
+    comm->Connection = conn;
+    comm->CommandText = "SELECT id FROM app_user WHERE username='" + username + "'";
+
+    /* Paso 3: Se ejecuta la sentencia */
+    SqlDataReader^ dr = comm->ExecuteReader();
+
+    /* Paso 4: Se procesan los resultados */
+    if (dr->Read()) {
+        id = (int)dr["id"];
+    }
+
+    /* Paso 5: Se cierra los objetos de conexión!!!!!!!!!! */
+    if (dr != nullptr) dr->Close();
+    if (conn != nullptr) conn->Close();
+    return id;
 }
 
 int AppController::DBController::QueryLastUserId()
@@ -1171,7 +1256,7 @@ void AppController::DBController::LoadManagers()
 void AppController::DBController::AddtoCarrito(Product^product)
 {
     carritoDB->ListDB->Add(product);
-    productDB->Persist();
+    //productDB->Persist();
 }
 
 void AppController::DBController::DeletefromCarrito(int productId)

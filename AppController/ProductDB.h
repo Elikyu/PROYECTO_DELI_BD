@@ -9,8 +9,8 @@ namespace AppController {
 	public:
 		List <Product^>^ ListDB = gcnew List<Product^>();
 		ProductDB();
-		void Persist();
-		void LoadFromBinaryFile();
+		//void Persist();
+		//void LoadFromBinaryFile();
 
 	};
 }

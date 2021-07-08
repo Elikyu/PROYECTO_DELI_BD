@@ -3,19 +3,20 @@
   <ListDB>
     <DeliveryMan>
       <Status>0</Status>
-      <Address>Direccion3</Address>
+      <Address>Direccion10</Address>
       <Category>Repartidor</Category>
-      <Email>xssas@hotmail.com</Email>
-      <PhoneNumber>23156136</PhoneNumber>
-      <DocumentNumber>15616</DocumentNumber>
+      <Email>ps21@gmail.com</Email>
+      <PhoneNumber>123456789</PhoneNumber>
+      <DocumentNumber>20172488</DocumentNumber>
       <Gender>77</Gender>
-      <LastName>Taipe</LastName>
-      <FirstName>Metzelder</FirstName>
-      <Password>1234</Password>
-      <Username>met</Username>
-      <Id>9</Id>
-      <VerificationCode>123456</VerificationCode>
+      <LastName>Sánchez</LastName>
+      <FirstName>Piero</FirstName>
+      <Password>password</Password>
+      <Username>ps21</Username>
+      <Id>1</Id>
+      <VerificationCode>0</VerificationCode>
       <Salary>0</Salary>
+      <DeliveryManRatingAverage>0</DeliveryManRatingAverage>
       <Available>false</Available>
       <Quota>0</Quota>
     </DeliveryMan>
