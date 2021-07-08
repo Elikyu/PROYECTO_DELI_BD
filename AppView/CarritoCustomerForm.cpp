@@ -7,7 +7,7 @@ System::Void AppView::CarritoCustomerForm::btnASCustom_Click(System::Object^ sen
 {
 	Ubicacion^ aForm = gcnew Ubicacion();
 	int customerId = UserManager::ReturnIDbyUserName(textUserNameCS->Text);
-	User^ u = UserManager::QueryUserbyId(customerId);
+	Customer^ u = UserManager::QueryCustomerbyId(customerId);
 	aForm->txtAddressC->Text = u->Address;
 	aForm->txtUSER->Text = u->Username;
 	aForm->ShowDialog();
@@ -48,7 +48,7 @@ System::Void AppView::CarritoCustomerForm::btnRegisterSale_Click(System::Object^
 		//aForm->ShowDialog();
 		Order^ sale = gcnew Order();
 		int customerId = UserManager::ReturnIDbyUserName(textUserNameCS->Text);
-		sale->User = UserManager::QueryUserbyId(customerId);
+		sale->User = UserManager::QueryCustomerbyId(customerId);
 		DateTime dt = dtpSaleDate->Value;
 		sale->Date = dt.Now + "" ; // ToString();
 		sale->Total = Double::Parse(txtTotalSale->Text);
@@ -90,8 +90,8 @@ System::Void AppView::CarritoCustomerForm::btnRegisterSale_Click(System::Object^
 
 			
 		Boleta^ aForm = gcnew Boleta();       
-		User^ userB = gcnew User();
-		userB= UserManager::QueryUserbyId(customerId);
+		Customer^ userB = gcnew Customer();
+		userB= UserManager::QueryCustomerbyId(customerId);
 		aForm->textNameCB->Text = userB->FirstName + " " + userB->LastName;
 		aForm->textDateTimeB->Text = sale->Date;
 		aForm->txtDocumentNumberCB->Text = userB->DocumentNumber;

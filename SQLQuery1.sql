@@ -1,163 +1,4 @@
-IF OBJECT_ID('dbo.SALE_DETAIL', 'U') IS NOT NULL 
-  DROP TABLE dbo.SALE_DETAIL 
-GO
-IF OBJECT_ID('dbo.BONUS_POINTS', 'U') IS NOT NULL 
-  DROP TABLE dbo.BONUS_POINTS 
-GO
-IF OBJECT_ID('dbo.ORDER_S', 'U') IS NOT NULL
-	DROP TABLE dbo.ORDER_S
-GO
-IF OBJECT_ID('dbo.DELIVERYMAN', 'U') IS NOT NULL
-	DROP TABLE dbo.DELIVERYMAN
-GO
-IF OBJECT_ID('dbo.CUSTOMER', 'U') IS NOT NULL
-	DROP TABLE dbo.CUSTOMER
-GO
-IF OBJECT_ID('dbo.HEALTHCARE_PRODUCT', 'U') IS NOT NULL
-	DROP TABLE dbo.HEALTHCARE_PRODUCT
-GO
-IF OBJECT_ID('dbo.GROCERY_PRODUCT', 'U') IS NOT NULL
-	DROP TABLE dbo.GROCERY_PRODUCT
-GO
-IF OBJECT_ID('dbo.PRODUCT', 'U') IS NOT NULL
-	DROP TABLE dbo.PRODUCT
-GO
-IF OBJECT_ID('dbo.MANAGER', 'U') IS NOT NULL
-	DROP TABLE dbo.MANAGER
-GO
-IF OBJECT_ID('dbo.EMPLOYEE', 'U') IS NOT NULL
-	DROP TABLE dbo.EMPLOYEE
-GO
-IF OBJECT_ID('dbo.APP_USER', 'U') IS NOT NULL
-	DROP TABLE dbo.APP_USER
-GO
 
-CREATE TABLE APP_USER (
-	id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	username VARCHAR(100) UNIQUE NOT NULL,
-	password VARCHAR(100) NOT NULL,
-	first_name VARCHAR(100) NOT NULL,
-	last_name VARCHAR(100) NOT NULL,
-	gender CHAR(1) NULL,
-	document_number CHAR(8) NOT NULL UNIQUE,
-	phone_number VARCHAR(50) NULL,
-    email VARCHAR(150) NOT NULL UNIQUE,
-	category VARCHAR(15) NULL,
-	address VARCHAR(150) NULL,	
-	status CHAR(1) NULL	
-)
-GO
-CREATE TABLE CUSTOMER (
-	id INT NOT NULL PRIMARY KEY,
-	customer_points INT NOT NULL,         /*Referenciar Bonus Points*/
-)
-GO
-
-ALTER TABLE CUSTOMER
-ADD CONSTRAINT FK_CUSTOMER_USER_ID FOREIGN KEY (id)
-REFERENCES APP_USER(id)
-ON DELETE CASCADE
-GO
-
-CREATE TABLE MANAGER (
-	id INT NOT NULL PRIMARY KEY,
-	employees_number INT NULL,
-)
-GO
-ALTER TABLE MANAGER
-ADD CONSTRAINT FK_MANAGER_USER_ID FOREIGN KEY (id)
-REFERENCES APP_USER(id)
-ON DELETE CASCADE
-GO
-CREATE TABLE DELIVERYMAN (
-	id INT NOT NULL PRIMARY KEY,
-	/*Availible*/
-	deliveryManRatingAverage DECIMAL(1, 1) NULL,
-)
-GO
-ALTER TABLE DELIVERYMAN
-ADD CONSTRAINT FK_DELIVERYMAN_USER_ID FOREIGN KEY (id)
-REFERENCES APP_USER(id)
-ON DELETE CASCADE
-GO
-
-CREATE TABLE PRODUCT(
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	name VARCHAR(250) NOT NULL,
-	description VARCHAR(500) NOT NULL,
-	price DECIMAL(10, 2) NOT NULL,
-	stockTotal INT NOT NULL, /*stock es stocktotal*/
-	status CHAR(1) NULL,
-	photo IMAGE NULL,
-	brand VARCHAR(50) NOT NULL,
-	quantitySold INT NOT NULL,  
-)
-GO
-CREATE TABLE HEALTHCARE_PRODUCT(
-	id INT NOT NULL PRIMARY KEY,
-)
-GO
-CREATE TABLE GROCERY_PRODUCT(
-	id INT NOT NULL PRIMARY KEY,
-)
-GO
-ALTER TABLE HEALTHCARE_PRODUCT
-ADD CONSTRAINT FK_HEALTHCARE_PRODUCT_ID FOREIGN KEY (id)
-REFERENCES PRODUCT(id)
-ON DELETE CASCADE
-GO
-ALTER TABLE GROCERY_PRODUCT
-ADD CONSTRAINT FK_GROCERY_PRODUCT_ID FOREIGN KEY (id)
-REFERENCES PRODUCT(id)
-ON DELETE CASCADE
-GO
-
-
-CREATE TABLE ORDER_S(
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	status CHAR(1) NULL,
-	date VARCHAR(150) NOT NULL,
-	paymentType CHAR(8) NOT NULL,
-	arrivalTime INT NOT NULL,
-	deliveryManRating INT NULL,
-	customerRating INT NULL,
-	ubication VARCHAR(25) NOT NULL,
-	total DECIMAL(10, 2) NOT NULL,
-    customer_id INT NOT NULL,
-	deliveryMan_id INT NULL,
-)
-GO
-ALTER TABLE ORDER_S
-ADD CONSTRAINT FK_ORDER_S_CUSTOMER_ID FOREIGN KEY (customer_id)
-REFERENCES CUSTOMER(id)
-ON DELETE CASCADE
-GO
-ALTER TABLE ORDER_S
-ADD CONSTRAINT FK_ORDER_S_DELIVERYMAN_ID FOREIGN KEY (deliveryMan_id)
-REFERENCES DELIVERYMAN(id)
-ON DELETE NO ACTION
-GO
-
-CREATE TABLE SALE_DETAIL (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-	order_id INT NOT NULL,
-	quantity INT NULL,
-    unit_price DECIMAL(10,2) NULL,
-	subtotal DECIMAL(10,2) NULL,
-	total DECIMAL(10,2) NULL,
-	product_id INT NOT NULL,
-)
-GO
-ALTER TABLE SALE_DETAIL
-ADD CONSTRAINT FK_SALE_DETAIL_ORDER_S_ID FOREIGN KEY (order_id)
-REFERENCES ORDER_S(id)
-ON DELETE CASCADE
-GO
-ALTER TABLE SALE_DETAIL
-ADD CONSTRAINT FK_SALE_DETAIL_PRODUCT_ID FOREIGN KEY (product_id)
-REFERENCES PRODUCT(id)
-ON DELETE CASCADE
-GO
 
 /*AddUser*/
 IF EXISTS ( SELECT * 
@@ -244,6 +85,26 @@ CREATE PROCEDURE dbo.usp_AddCustomer(
 	END
 GO
 
+/*QueryCustomerById*/
+IF EXISTS ( SELECT * 
+            FROM   sysobjects 
+            WHERE  id = object_id(N'[dbo].[usp_QueryCustomerById]') 
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+BEGIN
+    DROP PROCEDURE [dbo].[usp_QueryCustomerById]
+END
+GO
+CREATE PROCEDURE dbo.usp_QueryCustomerById (
+	@id INT
+)
+AS
+	SELECT C.id as id, AU.username as username, AU.first_name as first_name, AU.last_name as last_name, AU.gender as gender, AU.email as email, 
+			AU.document_number as document_number, AU.address as address, AU.phone_number as phone_number, C.customer_points as customer_points
+	FROM CUSTOMER C
+	INNER JOIN APP_USER AU ON C.id=AU.id 
+	WHERE C.id=@id
+GO
+
 /*AddManager*/
 IF EXISTS ( SELECT * 
             FROM   sysobjects 
@@ -276,6 +137,7 @@ CREATE PROCEDURE dbo.usp_AddManager(
 	END
 GO
 
+/*AddDeliveryMan*/
 IF EXISTS ( SELECT * 
             FROM   sysobjects 
             WHERE  id = object_id(N'[dbo].[usp_AddDeliveryMan]') 
@@ -307,6 +169,29 @@ CREATE PROCEDURE dbo.usp_AddDeliveryMan(
 	END
 GO
 
+/*QueryDeliveryManById*/
+IF EXISTS ( SELECT * 
+            FROM   sysobjects 
+            WHERE  id = object_id(N'[dbo].[usp_QueryDeliveryManById]') 
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+BEGIN
+    DROP PROCEDURE [dbo].[usp_QueryDeliveryManById]
+END
+GO
+CREATE PROCEDURE dbo.usp_QueryDeliveryManById (
+	@id INT
+)
+AS
+	SELECT C.id as id, AU.username as username, AU.first_name as first_name, AU.last_name as last_name, AU.gender as gender, AU.email as email, 
+			AU.document_number as document_number, AU.address as address, AU.phone_number as phone_number, C.deliveryManRatingAverage as deliveryManRatingAverage
+			
+	FROM DELIVERYMAN C
+	INNER JOIN APP_USER AU ON C.id=AU.id 
+	WHERE C.id=@id
+GO
+
+
+/*AddGroceries*/
 IF EXISTS ( SELECT * 
             FROM   sysobjects 
             WHERE  id = object_id(N'[dbo].[usp_AddGroceries]') 
@@ -646,3 +531,5 @@ AS
 			p.description LIKE '%' + @data + '%') 	
 	ORDER BY name
 GO
+
+

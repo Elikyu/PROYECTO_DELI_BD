@@ -835,7 +835,7 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 			u->Password = txtPasswordchck->Text;
 			u->Gender = Char::Parse(txtGenderchk->Text);
 			u->Category = txtCategorychck->Text;
-			
+
 
 			if (category->CompareTo("Cliente") == 0) {
 				c->Username = txtUserchck->Text;
@@ -850,16 +850,14 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 				c->Category = txtCategorychck->Text;
 				c->CustomerPoints = 0;
 
-				if (UserManager::ConfirmCustomer(c)) {
-					//int id= UserManager::QueryLastUserId() + 1;
-					//u->Id = id;
-					//c->Id = id;
-					UserManager::AddUser(u);
-					UserManager::AddCustomers(c);
-					panelRegister->Visible = false;
-					panelLogin->Visible = true;
-					ClearControls();
-				}
+				//int id= UserManager::QueryLastUserId() + 1;
+				//u->Id = id;
+				//c->Id = id;
+				//UserManager::AddUser(u);
+				UserManager::AddCustomers(c);
+				panelRegister->Visible = false;
+				panelLogin->Visible = true;
+				ClearControls();
 
 			}
 			else if (category->CompareTo("Repartidor") == 0) {
@@ -875,12 +873,13 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 				dm->Gender = Char::Parse(txtGenderchk->Text);
 				dm->Category = txtCategorychck->Text;
 				dm->VerificationCode = codeaccess;
+				dm->DeliveryManRatingAverage = 0;
 
-				if (UserManager::ConfirmDeliveryMan(dm)) {
-					int id=UserManager::QueryLastUserId() + 1;
-					u->Id = id;
-					dm->Id = id;
-					UserManager::AddUser(u);
+				if (Int32::Parse(txtCodeAccess->Text) == 123456) {
+					//int id=UserManager::QueryLastUserId() + 1;
+					//u->Id = id;
+					//dm->Id = id;
+					//UserManager::AddUser(u);
 					UserManager::AddDeliveryMan(dm);
 					panelRegister->Visible = false;
 					panelLogin->Visible = true;
@@ -900,12 +899,13 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 				m->Gender = Char::Parse(txtGenderchk->Text);
 				m->Category = txtCategorychck->Text;
 				m->VerificationCode = codeaccess;
+				m->EmployeesNumber = 0;
 
-				if (UserManager::ConfirmManager(m)) {
-					int id = UserManager::QueryLastUserId() + 1;
-					u->Id =id;
-					m->Id = id;
-					UserManager::AddUser(u);
+				if (Int32::Parse(txtCodeAccess->Text) == 0000) {
+					//int id = UserManager::QueryLastUserId() + 1;
+					//u->Id =id;
+					//m->Id = id;
+					//UserManager::AddUser(u);
 					UserManager::AddManagers(m);
 					panelRegister->Visible = false;
 					panelLogin->Visible = true;

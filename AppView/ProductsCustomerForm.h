@@ -357,6 +357,7 @@ namespace AppView {
 				dgvProducts->Rows->Clear();
 			
 				for (int i = 0; i < productList->Count; i++) {
+					
 					dgvProducts->Rows->Add(gcnew array<String^> {
 						"" + productList[i]->Id,
 							productList[i]->Name,
@@ -364,6 +365,7 @@ namespace AppView {
 							"" + productList[i]->Price
 
 					});
+				
 				}
 				}
 				

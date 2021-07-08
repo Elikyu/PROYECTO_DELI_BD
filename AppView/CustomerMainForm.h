@@ -619,7 +619,7 @@ namespace AppView {
 		CarritoCustomerForm^ carrito = gcnew CarritoCustomerForm();
 		carrito->textUserNameCS->Text = textUserNameC->Text;
 		int customerId = UserManager::ReturnIDbyUserName(textUserNameC->Text);
-		User^ u = UserManager::QueryUserbyId(customerId);
+		Customer^ u = UserManager::QueryCustomerbyId(customerId);
 		carrito->txtSAddres->Text = u->Address;
 		this->AbrirPanel(carrito);
 		
