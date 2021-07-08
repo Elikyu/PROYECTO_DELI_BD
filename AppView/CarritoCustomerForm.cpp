@@ -85,7 +85,7 @@ System::Void AppView::CarritoCustomerForm::btnRegisterSale_Click(System::Object^
 		}
 		
 		
-		sale->Id=AppManager::QueryLastSaleId()+1;
+		//sale->Id=AppManager::QueryLastSaleId()+1;
 		sale->Status = 'W';
 
 			
