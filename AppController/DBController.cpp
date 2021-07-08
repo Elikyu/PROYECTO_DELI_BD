@@ -228,27 +228,18 @@ List<Product^>^ AppController::DBController::QueryAllProducts()
 
     List<Product^>^ list = gcnew List<Product^>();
     while (reader->Read()) {
-        if (reader["name"] != nullptr) {
-            Groceries^ s = gcnew Groceries();
+        if (reader["status"] != 'I') {
+            Product^ s = gcnew Product();
             s->Id = Int32::Parse(reader["id"]->ToString());
             s->Name = reader["name"]->ToString();
             s->Description = reader["description"]->ToString();
-            s->Price = Double::Parse(reader["price"]->ToString());
-            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
-            s->QuantitySold = Int32::Parse(reader["quantitySold"]->ToString());
-            list->Add(s);
-        }
-        if (reader["brand"] != nullptr) {
-            HealthCare^ s = gcnew HealthCare();
-            s->Id = Int32::Parse(reader["id"]->ToString());
-            s->Name = reader["name"]->ToString();
-            s->Description = reader["description"]->ToString();
-            s->Price = Double::Parse(reader["price"]->ToString());
-            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
             s->Brand = reader["brand"]->ToString();
+            //s->Photo = (array<Byte>^)reader["photo"];
+            s->Price = Double::Parse(reader["price"]->ToString());
+            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());
             s->QuantitySold = Int32::Parse(reader["quantitySold"]->ToString());
             list->Add(s);
-        }
+        }        
     }
 
     //IMPORTANTE Paso 4: Cerramos la conexión con la BD
@@ -593,15 +584,9 @@ List<HealthCare^>^ AppController::DBController::QueryAllHealthCareByCoincidence(
 
 }
 
-Product^ AppController::DBController::QueryProductByName(String^ name)
+List<Product^>^ AppController::DBController::QueryProductByName(String^ name)
 {
-
-    for (int i = 0; i < productDB->ListDB->Count; i++)
-        if (productDB->ListDB[i]->Name->ToUpper()->CompareTo(name->ToUpper())==0) { // si coincide, se procede a eliminar
-             // en lugar de borrarlo (por temas de seguridad), se le cambia de estado: INACTIVO
-            return productDB->ListDB[i];
-        }
-    return nullptr;
+    SqlConnection^ conn = GetConnection();    SqlCommand^ comm;    comm = gcnew SqlCommand("usp_QueryAllProductsByCoincidence", conn);    comm->CommandType = System::Data::CommandType::StoredProcedure;    comm->Parameters->Add("@data", System::Data::SqlDbType::VarChar, 250);    comm->Prepare();    comm->Parameters["@data"]->Value = name;    SqlDataReader^ reader = comm->ExecuteReader();    List<Product^>^ list = gcnew List<Product^>();    while (reader->Read()) {        if (reader["status"] == 'A') {            Product^ s = gcnew Product();            s->Id = Int32::Parse(reader["id"]->ToString());            s->Name = reader["name"]->ToString();            s->Description = reader["description"]->ToString();            s->Price = Double::Parse(reader["price"]->ToString());            s->StockTotal = Int32::Parse(reader["stockTotal"]->ToString());            s->Brand = reader["brand"]->ToString();            s->QuantitySold = Int32::Parse(reader["quantitySold"]->ToString());            list->Add(s);        }    }    if (conn != nullptr) conn->Close();    return list;
 
 }
 
@@ -1511,9 +1496,9 @@ bool AppController::DBController::ConfirmDeliveryMan(DeliveryMan^ deliveryman)
 
 void AppController::DBController::AddDeliveryMan(DeliveryMan^ deliveryman)
 {
-   // deliveryManDB->ListDB->Add(deliveryman);
-    //SaveDeliveryMan();
-    // Paso 1: Se obtiene la conexión
+    // deliveryManDB->ListDB->Add(deliveryman);
+     //SaveDeliveryMan();
+     // Paso 1: Se obtiene la conexión
     SqlConnection^ conn = GetConnection();
 
     // Paso 2:  Se prepara la sentencia

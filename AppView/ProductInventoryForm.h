@@ -688,10 +688,12 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 		}
 		public:
 			void RefreshDGVProducts() {
-				if (tabPageGroceries->Visible)
+				if (tabPageGroceries->Visible) {
 					RefreshDGVGroceries();
-				if (tabPageHealthCare->Visible)
+				}
+				if (tabPageHealthCare->Visible) {
 					RefreshDGVHealthCare();
+				} 
 			}
 			Void RefreshDGVGroceries() {
 				List<Groceries^>^ groceriesList = AppManager::QueryAllGroceries();
@@ -746,7 +748,9 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 				}
 				AppManager::AddProduct(p);
 				RefreshDGVProducts();
-				btnAdd->Enabled = false;
+				btnAdd->Enabled = true; //modificado
+				btnUploadPhotohealthcare->Enabled = true; //agregago y modificado
+				btnUploadPhoto->Enabled = true; //agregago y modificado
 				ClearControls();
 			}
 			catch (Exception^ ex) {
@@ -853,15 +857,16 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 					p->Status = 'A';
 
 					AppManager::UpdateProduct(p);
-					//btnAdd->Enabled = false;
-					btnUpdate->Enabled = false;
-					btnDelete->Enabled = false;
-					btnUploadPhoto->Enabled = false;
 
-					btnUpdatehealthcare->Enabled = false;
-					btnDeletehealthcare->Enabled = false;
-					btnUploadPhotohealthcare->Enabled = false;
+					btnUpdate->Enabled = true; // modificado
+					btnDelete->Enabled = true; // modificado
+					btnUploadPhoto->Enabled = true; //modificado
+
+					btnUpdatehealthcare->Enabled = true; // modificado
+					btnUploadPhotohealthcare->Enabled = true; //modificado
+					
 					RefreshDGVProducts();
+					ClearControls(); //agregado
 				}
 				catch (Exception^ ex) {
 					MessageBox::Show(ex->ToString(), "Error al grabar.");
@@ -961,7 +966,9 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 
 				AppManager::AddProduct(p);
 				RefreshDGVProducts();
-				btnAddhealthcare->Enabled = false;
+				btnAddhealthcare->Enabled = true; //modificado
+				btnUploadPhotohealthcare->Enabled = true; //agregago y modificado
+				btnUploadPhoto->Enabled = true; //agregago y modificado
 				ClearControls();
 			}
 			catch (Exception^ ex) {
@@ -973,9 +980,11 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 		private: System::Void tabControl1_Click(System::Object^ sender, System::EventArgs^ e) {
 			if (tabPageGroceries->Visible) {
 				RefreshDGVGroceries();
+				ClearControls();
 			}
 			if (tabPageHealthCare->Visible) {
 				RefreshDGVHealthCare();
+				ClearControls();
 			}
 		}
 		
@@ -1060,16 +1069,16 @@ private: System::Windows::Forms::DataGridViewTextBoxColumn^ Stockhealthcare;
 
 					p->Brand = txtBrandhealthcare->Text;
 					p->Status = 'A';
-					btnUpdate->Enabled = false;
-					btnDelete->Enabled = false;
-					btnUploadPhoto->Enabled = false;
+					btnUpdate->Enabled = true; // modificado
+					btnDelete->Enabled = true; // modificado
+					btnUploadPhoto->Enabled = true; // modificado
 
-					//btnAddhealthcare->Enabled = true;
-					btnUpdatehealthcare->Enabled = false;
-					btnDeletehealthcare->Enabled = false;
-					btnUploadPhotohealthcare->Enabled = false;
+					btnUpdatehealthcare->Enabled = true; // modificado
+					btnDeletehealthcare->Enabled = true; // modificado
+					btnUploadPhotohealthcare->Enabled = true; // modificado
 					AppManager::UpdateProduct(p);
 					RefreshDGVProducts();
+					ClearControls(); //agregado
 				}
 				catch (Exception^ ex) {
 					MessageBox::Show(ex->ToString(), "Error al grabar.");

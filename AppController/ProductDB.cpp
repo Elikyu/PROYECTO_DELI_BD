@@ -11,8 +11,8 @@ AppController::ProductDB::ProductDB()
 {
 }
 
-//void AppController::ProductDB::Persist()
-//{
+void AppController::ProductDB::Persist()
+{
 	/*ProductDB^ productDB = gcnew ProductDB();
 	if (productDB != nullptr) {
 		Stream^ stream = File::Open("products.bin", FileMode::Create);
@@ -20,13 +20,13 @@ AppController::ProductDB::ProductDB()
 		bFormatter->Serialize(stream, productDB->ListDB);
 		stream->Close();
 	}*/
-//Stream^ stream = File::Open("products.bin", FileMode::Create);
-//BinaryFormatter^ bFormatter = gcnew BinaryFormatter();
-//bFormatter->Serialize(stream, ListDB);
-//stream->Close();
-//}
+Stream^ stream = File::Open("products.bin", FileMode::Create);
+BinaryFormatter^ bFormatter = gcnew BinaryFormatter();
+bFormatter->Serialize(stream, ListDB);
+stream->Close();
+}
 
-/*void AppController::ProductDB::LoadFromBinaryFile()
+void AppController::ProductDB::LoadFromBinaryFile()
 {
 	try {
 		if (File::Exists("products.bin")) {
@@ -39,4 +39,4 @@ AppController::ProductDB::ProductDB()
 	catch (...) {
 		return;
 	}
-}*/
+}

@@ -835,7 +835,7 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 			u->Password = txtPasswordchck->Text;
 			u->Gender = Char::Parse(txtGenderchk->Text);
 			u->Category = txtCategorychck->Text;
-			
+
 
 			if (category->CompareTo("Cliente") == 0) {
 				c->Username = txtUserchck->Text;
@@ -850,14 +850,14 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 				c->Category = txtCategorychck->Text;
 				c->CustomerPoints = 0;
 
-					//int id= UserManager::QueryLastUserId() + 1;
-					//u->Id = id;
-					//c->Id = id;
-					//UserManager::AddUser(u);
-					UserManager::AddCustomers(c);
-					panelRegister->Visible = false;
-					panelLogin->Visible = true;
-					ClearControls();
+				//int id= UserManager::QueryLastUserId() + 1;
+				//u->Id = id;
+				//c->Id = id;
+				//UserManager::AddUser(u);
+				UserManager::AddCustomers(c);
+				panelRegister->Visible = false;
+				panelLogin->Visible = true;
+				ClearControls();
 
 			}
 			else if (category->CompareTo("Repartidor") == 0) {
@@ -875,7 +875,7 @@ private: System::Void pictureBox2_Click(System::Object^ sender, System::EventArg
 				dm->VerificationCode = codeaccess;
 				dm->DeliveryManRatingAverage = 0;
 
-				if (Int32::Parse(txtCodeAccess->Text)==123456) {
+				if (Int32::Parse(txtCodeAccess->Text) == 123456) {
 					//int id=UserManager::QueryLastUserId() + 1;
 					//u->Id = id;
 					//dm->Id = id;

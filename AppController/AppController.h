@@ -22,7 +22,8 @@ namespace AppController {
 			static Groceries^ QueryGroceriesById(int productId);
 			static HealthCare^ QueryHealthCareById(int productId);
 			static int QueryLastProductId();
-			static Product^ QueryProductByName(String^);
+			static List<Product^>^ QueryProductByName(String^);
+
 			//
 
 			// Métodos CRUD para puntos bonus
