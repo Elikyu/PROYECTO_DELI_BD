@@ -1112,18 +1112,102 @@ bool AppController::DBController::ConfirmUser(User^ user) {
 /*Customer*/
 void AppController::DBController::AddCustomers(Customer^ customer)
 {
-    customerDB->ListDB->Add(customer);
-    SaveCustomers();
+    //customerDB->ListDB->Add(customer);
+    //SaveCustomers();
+    // Paso 1: Se obtiene la conexión
+    SqlConnection^ conn = GetConnection();
+
+    // Paso 2:  Se prepara la sentencia
+    SqlCommand^ comm;
+    String^ strCmd;
+    strCmd = "dbo.usp_AddCustomer";
+    comm = gcnew SqlCommand(strCmd, conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@username", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@password", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@first_name", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@last_name", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@gender", System::Data::SqlDbType::Char, 1);
+    comm->Parameters->Add("@document_number", System::Data::SqlDbType::VarChar, 15);
+    comm->Parameters->Add("@phone_number", System::Data::SqlDbType::VarChar, 50);
+    comm->Parameters->Add("@address", System::Data::SqlDbType::VarChar, 150);
+    comm->Parameters->Add("@email", System::Data::SqlDbType::VarChar, 150);
+    comm->Parameters->Add("@category", System::Data::SqlDbType::VarChar, 15);
+    comm->Parameters->Add("@customer_points", System::Data::SqlDbType::Int);
+
+    SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
+    outputIdParam->Direction = System::Data::ParameterDirection::Output;
+    comm->Parameters->Add(outputIdParam);
+    comm->Prepare();
+
+    comm->Parameters["@username"]->Value = customer->Username;
+    comm->Parameters["@password"]->Value = customer->Password;
+    comm->Parameters["@first_name"]->Value = customer->FirstName;
+    comm->Parameters["@last_name"]->Value = customer->LastName;
+    comm->Parameters["@gender"]->Value = customer->Gender;
+    comm->Parameters["@document_number"]->Value = customer->DocumentNumber;
+    comm->Parameters["@phone_number"]->Value = customer->PhoneNumber;
+    comm->Parameters["@address"]->Value = customer->Address;
+    comm->Parameters["@email"]->Value = customer->Email;
+    comm->Parameters["@category"]->Value = customer->Category;
+    comm->Parameters["@id"]->Value = customer->Id;;
+    comm->Parameters["@customer_points"]->Value = customer->CustomerPoints;
+
+
+    //Paso 3: Se ejecuta la sentencia
+    comm->ExecuteNonQuery();
+
+    //Paso 4: Si se quiere procesar la salida.
+    int output_id = Convert::ToInt32(comm->Parameters["@id"]->Value);
+
+    //Paso 5: Se cierra la conexión
+    if (conn != nullptr) conn->Close();
 }
 
 Customer^ AppController::DBController::QueryCustomerById(int customerId)
 {
+    /*
     LoadCustomers();
     for (int i = 0; i < customerDB->ListDB->Count; i++) {
         if (customerDB->ListDB[i]->Id == customerId)
             return customerDB->ListDB[i];
     }
     return nullptr;
+    */
+    /* 1er paso: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /* 2do paso: Se prepara la sentencia */
+    SqlCommand^ comm;
+
+    comm = gcnew SqlCommand("usp_QueryCustomerById", conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
+    comm->Prepare();
+    comm->Parameters["@id"]->Value = customerId;
+
+    /* 3er paso: Se ejecuta la sentencia */
+    SqlDataReader^ reader = comm->ExecuteReader();
+
+    /* 4to paso: Se procesan los resultados */
+    Customer^ c;
+    if (reader->Read()) {
+        c = gcnew Customer();
+        c->Id = Int32::Parse(reader["id"]->ToString());
+        c->Username = reader["username"]->ToString();
+        c->FirstName = reader["first_name"]->ToString();
+        c->LastName = reader["last_name"]->ToString();
+        c->Gender = reader["gender"]->ToString()[0];
+        c->Email = safe_cast<String^> (reader["email"]);
+        c->DocumentNumber = safe_cast<String^> (reader["document_number"]);
+        c->Address = safe_cast<String^> (reader["address"]);
+        c->PhoneNumber = safe_cast<String^> (reader["phone_number"]);
+        c->CustomerPoints = Int32::Parse(reader["customer_points"]->ToString());
+    }
+
+    /* IMPORTANTE 5to paso: Cerramos la conexión con la BD */
+    if (conn != nullptr) conn->Close();
+    return c;
 }
 
 List<Customer^>^ AppController::DBController::QueryAllCustomer()
@@ -1222,8 +1306,58 @@ bool AppController::DBController::ConfirmManager(Manager^ manager)
 
 void AppController::DBController::AddManagers(Manager^ manager)
 {
-    managerDB->ListDB->Add(manager);
-    SaveManagers();
+    //managerDB->ListDB->Add(manager);
+    //SaveManagers();
+    //customerDB->ListDB->Add(customer);
+    //SaveCustomers();
+    // Paso 1: Se obtiene la conexión
+    SqlConnection^ conn = GetConnection();
+
+    // Paso 2:  Se prepara la sentencia
+    SqlCommand^ comm;
+    String^ strCmd;
+    strCmd = "dbo.usp_AddManager";
+    comm = gcnew SqlCommand(strCmd, conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@username", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@password", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@first_name", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@last_name", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@gender", System::Data::SqlDbType::Char, 1);
+    comm->Parameters->Add("@document_number", System::Data::SqlDbType::VarChar, 15);
+    comm->Parameters->Add("@phone_number", System::Data::SqlDbType::VarChar, 50);
+    comm->Parameters->Add("@address", System::Data::SqlDbType::VarChar, 150);
+    comm->Parameters->Add("@email", System::Data::SqlDbType::VarChar, 150);
+    comm->Parameters->Add("@category", System::Data::SqlDbType::VarChar, 15);
+    comm->Parameters->Add("@employees_number", System::Data::SqlDbType::Int);
+
+    SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
+    outputIdParam->Direction = System::Data::ParameterDirection::Output;
+    comm->Parameters->Add(outputIdParam);
+    comm->Prepare();
+
+    comm->Parameters["@username"]->Value = manager->Username;
+    comm->Parameters["@password"]->Value = manager->Password;
+    comm->Parameters["@first_name"]->Value = manager->FirstName;
+    comm->Parameters["@last_name"]->Value = manager->LastName;
+    comm->Parameters["@gender"]->Value = manager->Gender;
+    comm->Parameters["@document_number"]->Value = manager->DocumentNumber;
+    comm->Parameters["@phone_number"]->Value = manager->PhoneNumber;
+    comm->Parameters["@address"]->Value = manager->Address;
+    comm->Parameters["@email"]->Value = manager->Email;
+    comm->Parameters["@category"]->Value = manager->Category;
+    comm->Parameters["@id"]->Value = manager->Id;;
+    comm->Parameters["@employees_number"]->Value = manager->EmployeesNumber;
+
+
+    //Paso 3: Se ejecuta la sentencia
+    comm->ExecuteNonQuery();
+
+    //Paso 4: Si se quiere procesar la salida.
+    int output_id = Convert::ToInt32(comm->Parameters["@id"]->Value);
+
+    //Paso 5: Se cierra la conexión
+    if (conn != nullptr) conn->Close();
 }
 
 void AppController::DBController::SaveManagers()
@@ -1301,6 +1435,7 @@ bool AppController::DBController::QueryCarritoByName(String^ name)
 
 DeliveryMan^ AppController::DBController::QueryDeliveryManById(int deliverymanId)
 {
+    /*
     LoadDeliveryMan();
     for (int i = 0; i < deliveryManDB->ListDB->Count; i++) {
         if (deliveryManDB->ListDB[i]->Id == deliverymanId)
@@ -1309,6 +1444,41 @@ DeliveryMan^ AppController::DBController::QueryDeliveryManById(int deliverymanId
         }
     }
     return nullptr;
+    */
+    /* 1er paso: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /* 2do paso: Se prepara la sentencia */
+    SqlCommand^ comm;
+
+    comm = gcnew SqlCommand("usp_QueryDeliveryManById", conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@id", System::Data::SqlDbType::Int);
+    comm->Prepare();
+    comm->Parameters["@id"]->Value = deliverymanId;
+
+    /* 3er paso: Se ejecuta la sentencia */
+    SqlDataReader^ reader = comm->ExecuteReader();
+
+    /* 4to paso: Se procesan los resultados */
+    DeliveryMan^ c;
+    if (reader->Read()) {
+        c = gcnew DeliveryMan();
+        c->Id = Int32::Parse(reader["id"]->ToString());
+        c->Username = reader["username"]->ToString();
+        c->FirstName = reader["first_name"]->ToString();
+        c->LastName = reader["last_name"]->ToString();
+        c->Gender = reader["gender"]->ToString()[0];
+        c->Email = safe_cast<String^> (reader["email"]);
+        c->DocumentNumber = safe_cast<String^> (reader["document_number"]);
+        c->Address = safe_cast<String^> (reader["address"]);
+        c->PhoneNumber = safe_cast<String^> (reader["phone_number"]);
+        c->DeliveryManRatingAverage = Double::Parse(reader["deliveryManRatingAverage"]->ToString());
+    }
+
+    /* IMPORTANTE 5to paso: Cerramos la conexión con la BD */
+    if (conn != nullptr) conn->Close();
+    return c;
 }
 
 List<DeliveryMan^>^ AppController::DBController::QueryAllDeliveryMan()
@@ -1341,8 +1511,56 @@ bool AppController::DBController::ConfirmDeliveryMan(DeliveryMan^ deliveryman)
 
 void AppController::DBController::AddDeliveryMan(DeliveryMan^ deliveryman)
 {
-    deliveryManDB->ListDB->Add(deliveryman);
-    SaveDeliveryMan();
+   // deliveryManDB->ListDB->Add(deliveryman);
+    //SaveDeliveryMan();
+    // Paso 1: Se obtiene la conexión
+    SqlConnection^ conn = GetConnection();
+
+    // Paso 2:  Se prepara la sentencia
+    SqlCommand^ comm;
+    String^ strCmd;
+    strCmd = "dbo.usp_AddDeliveryMan";
+    comm = gcnew SqlCommand(strCmd, conn);
+    comm->CommandType = System::Data::CommandType::StoredProcedure;
+    comm->Parameters->Add("@username", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@password", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@first_name", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@last_name", System::Data::SqlDbType::VarChar, 100);
+    comm->Parameters->Add("@gender", System::Data::SqlDbType::Char, 1);
+    comm->Parameters->Add("@document_number", System::Data::SqlDbType::VarChar, 15);
+    comm->Parameters->Add("@phone_number", System::Data::SqlDbType::VarChar, 50);
+    comm->Parameters->Add("@address", System::Data::SqlDbType::VarChar, 150);
+    comm->Parameters->Add("@email", System::Data::SqlDbType::VarChar, 150);
+    comm->Parameters->Add("@category", System::Data::SqlDbType::VarChar, 15);
+    comm->Parameters->Add("@deliveryManRatingAverage", System::Data::SqlDbType::Int);
+
+    SqlParameter^ outputIdParam = gcnew SqlParameter("@id", System::Data::SqlDbType::Int);
+    outputIdParam->Direction = System::Data::ParameterDirection::Output;
+    comm->Parameters->Add(outputIdParam);
+    comm->Prepare();
+
+    comm->Parameters["@username"]->Value = deliveryman->Username;
+    comm->Parameters["@password"]->Value = deliveryman->Password;
+    comm->Parameters["@first_name"]->Value = deliveryman->FirstName;
+    comm->Parameters["@last_name"]->Value = deliveryman->LastName;
+    comm->Parameters["@gender"]->Value = deliveryman->Gender;
+    comm->Parameters["@document_number"]->Value = deliveryman->DocumentNumber;
+    comm->Parameters["@phone_number"]->Value = deliveryman->PhoneNumber;
+    comm->Parameters["@address"]->Value = deliveryman->Address;
+    comm->Parameters["@email"]->Value = deliveryman->Email;
+    comm->Parameters["@category"]->Value = deliveryman->Category;
+    comm->Parameters["@id"]->Value = deliveryman->Id;;
+    comm->Parameters["@deliveryManRatingAverage"]->Value = deliveryman->DeliveryManRatingAverage;
+
+
+    //Paso 3: Se ejecuta la sentencia
+    comm->ExecuteNonQuery();
+
+    //Paso 4: Si se quiere procesar la salida.
+    int output_id = Convert::ToInt32(comm->Parameters["@id"]->Value);
+
+    //Paso 5: Se cierra la conexión
+    if (conn != nullptr) conn->Close();
 }
 
 void AppController::DBController::SaveDeliveryMan()
