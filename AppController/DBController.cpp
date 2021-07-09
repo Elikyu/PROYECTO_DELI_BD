@@ -941,6 +941,7 @@ Order^ AppController::DBController::QueryOrderbyId(int saleId)
         saleDetail->UnitPrice = Double::Parse(dr["unit_price"]->ToString());
         //saleDetail->Product->Id = Int32::Parse(dr["product_id"]->ToString());
         saleDetail->Total = Double::Parse(dr["total"]->ToString());
+        saleDetail->SubTotal = Double::Parse(dr["subtotal"]->ToString());
         saleDetail->Product = QueryProductById(id);
         s->Details->Add(saleDetail);
     }
