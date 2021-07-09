@@ -6,6 +6,7 @@ using namespace System::Runtime::Serialization;
 using namespace System::Runtime::Serialization::Formatters::Binary;
 using namespace System::Xml::Serialization;
 
+
 void AppController::DBController::Init()
 {
     System::Xml::Serialization::XmlSerializer^ reader =
@@ -929,14 +930,19 @@ Order^ AppController::DBController::QueryOrderbyId(int saleId)
     comm2->CommandText = "SELECT * FROM sale_detail  WHERE order_id="+ saleId;
     SqlDataReader^ dr = comm2->ExecuteReader();
     int i = 0;
-    while (dr->Read()) {
-        //s->Details[i]->Product->Id = (int)dr["product_id"];
-        int a= Int32::Parse(dr["quantity"]->ToString());
-        int b  = (int)dr["unit_price"];
-        int c = (int)dr["product_id"];
-        int d = (int)dr["total"];
-        i++;
+    s->Details = gcnew List<SaleDetail^>();
+    SaleDetail^ saleDetail;
 
+    while (dr->Read()) {
+        int id = Int32::Parse(dr["product_id"]->ToString());
+       
+        saleDetail = gcnew SaleDetail();
+        saleDetail->Quantity= Int32::Parse(dr["quantity"]->ToString());
+        saleDetail->UnitPrice = Double::Parse(dr["unit_price"]->ToString());
+        //saleDetail->Product->Id = Int32::Parse(dr["product_id"]->ToString());
+        saleDetail->Total = Double::Parse(dr["total"]->ToString());
+        saleDetail->Product = QueryProductById(id);
+        s->Details->Add(saleDetail);
     }
 
     
