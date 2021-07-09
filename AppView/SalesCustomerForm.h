@@ -240,7 +240,7 @@ namespace AppView {
 					  if (listOrder[i]->Status == 'W') {
 							 mode = "EN ESPERA";
 							 deliveryman = "NO HAY AUN";
-
+//Problema con customer debido a que la base de datos no carga el campo del customer del campo order
 						 }
 						 else if (listOrder[i]->Status == 'G') {
 							 mode = "EN CAMINO";

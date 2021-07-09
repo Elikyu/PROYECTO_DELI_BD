@@ -253,7 +253,7 @@ namespace AppView {
 					   if (listOrder[i]->Status == 'W') { mode = "EN ESPERA";}
 					   else if (listOrder[i]->Status == 'G') {mode = "EN CAMINO"; }
 					   else { mode = "ENTREGADO"; }
-				   
+//Problema con customer debido a que la base de datos no carga el campo del customer del campo order				   
 					   dgvOrder->Rows->Add(gcnew array<String^> {
 						   "" + listOrder[i]->Id,
 						   "" + listOrder[i]->Customer->FirstName + " " + listOrder[i]->Customer->LastName,

@@ -816,8 +816,37 @@ void AppController::DBController::RegisterSale(Order^ sale)
 
 List<Order^>^ AppController::DBController::QueryAllSales()
 {
-    saleDB->LoadFromBinaryFile();
-    return saleDB->ListDB;
+    //saleDB->LoadFromBinaryFile();
+    //return saleDB->ListDB;
+
+    /* Paso 1: Se obtiene la conexión */
+    SqlConnection^ conn = GetConnection();
+
+    /* Paso 2: Se prepara la sentencia */
+    SqlCommand^ comm = gcnew SqlCommand();
+    comm->Connection = conn;
+    comm->CommandText = "SELECT * FROM ORDER_S";
+
+    /* Paso 3: Se ejecuta la sentencia */
+    SqlDataReader^ dr = comm->ExecuteReader();
+    List<Order^>^ order = gcnew List<Order^>();
+    Customer^ c = gcnew Customer();
+    Order^ ord;
+    /* Paso 4: Se procesan los resultados */
+    while(dr->Read()) {
+        ord = gcnew Order();
+        c = gcnew Customer();
+        c = QueryCustomerById(Int32::Parse(dr["customer_id"]->ToString()));
+        ord->Customer = c;
+        ord = QueryOrderbyId(Int32::Parse(dr["id"]->ToString()));
+        order->Add(ord);
+
+    }
+
+    /* Paso 5: Se cierra los objetos de conexión!!!!!!!!!! */
+    if (dr != nullptr) dr->Close();
+    if (conn != nullptr) conn->Close();
+    return order;
 }
 
 List<Order^>^ AppController::DBController::QueryAllSalesByCustomer(String^ username)
